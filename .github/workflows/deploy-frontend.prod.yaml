@@ -1,12 +1,7 @@
 name: Deploy Frontend to Production
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'client/**'
-      - '.github/workflows/deploy-frontend.prod.yaml'
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -56,4 +51,4 @@ jobs:
             sudo docker image prune -af
             
             echo "Running containers:"
-            sudo docker ps
+            sudo docker ps -a
