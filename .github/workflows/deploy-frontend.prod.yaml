@@ -30,9 +30,10 @@ jobs:
             
             cd "$APP_DIR"
             
-            # Fetch latest changes and reset
-            git fetch origin main
-            git reset --hard origin/main
+            # Fetch latest changes and reset to the triggered branch
+            git fetch origin ${{ github.ref_name }}
+            git checkout ${{ github.ref_name }}
+            git reset --hard origin/${{ github.ref_name }}
             
             echo "Creating Docker network if it doesn't exist..."
             sudo docker network inspect prospectly-prod-net >/dev/null 2>&1 || \
