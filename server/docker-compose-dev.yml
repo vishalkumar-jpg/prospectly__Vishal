@@ -8,7 +8,10 @@ services:
 
   prospectly:
     container_name: prospectly-dev
-    build: .
+    build:
+      context: .
+      args:
+        - SERVER_ENV_BASE64=${SERVER_ENV_BASE64}
     image: prospectly-server:local
     tty: true
     restart: always
@@ -42,7 +45,10 @@ services:
 
   prospectly-worker:
     container_name: prospectly-worker-dev
-    build: .
+    build:
+      context: .
+      args:
+        - SERVER_ENV_BASE64=${SERVER_ENV_BASE64}
     image: prospectly-server:local
     tty: true
     restart: always
