@@ -38,6 +38,10 @@ jobs:
             # Decode the base64 secret to a .env file
             echo "$SERVER_ENV_BASE64" | base64 --decode > .env
             
+            echo "Creating Docker network if it doesn't exist..."
+            sudo docker network inspect prospectly-prod-net >/dev/null 2>&1 || \
+              sudo docker network create prospectly-prod-net
+
             echo "Building and starting server..."
             cd "$APP_DIR/server"
             cp ../.env .env

@@ -1,8 +1,8 @@
 services:
   prospectly-frontend:
     container_name: prospectly-frontend
-    image: obdev/prospectly-frontend:latest
-    pull_policy: always
+    build: .
+    image: prospectly-frontend:local
     restart: always
     ports:
       - "127.0.0.1:3002:80"
@@ -13,5 +13,5 @@ services:
 
 networks:
   default:
-    name: "prospectly-prod"
-    driver: bridge
+    name: "prospectly-prod-net"
+    external: true

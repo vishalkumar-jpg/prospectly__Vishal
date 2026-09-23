@@ -8,8 +8,8 @@ services:
 
   prospectly:
     container_name: prospectly-dev
-    image: ghcr.io/vishalkumar-jpg/prospectly-server:latest
-    pull_policy: always
+    build: .
+    image: prospectly-server:local
     tty: true
     restart: always
 
@@ -42,8 +42,8 @@ services:
 
   prospectly-worker:
     container_name: prospectly-worker-dev
-    image: ghcr.io/vishalkumar-jpg/prospectly-server:latest
-    pull_policy: always
+    build: .
+    image: prospectly-server:local
     tty: true
     restart: always
 
@@ -80,4 +80,4 @@ services:
 networks:
   default:
     external: true
-    name: prospectly-dev
+    name: prospectly-prod-net
