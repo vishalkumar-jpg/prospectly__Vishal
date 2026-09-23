@@ -1,0 +1,135 @@
+services:
+  prospectly:
+    container_name: prospectly-local
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "${PORT}:${PORT}"
+    env_file:
+      - .env
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: ${PGPORT:-5432}
+      DATABASE_NAME: ${PGDATABASE}
+      DATABASE_USER: ${PGUSER}
+      DATABASE_PASSWORD: ${PGPASSWORD}
+      DATABASE_URL: postgresql://${PGUSER}:${PGPASSWORD}@postgres:${PGPORT:-5432}/${PGDATABASE}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "bun",
+          "-e",
+          "fetch('http://localhost:${PORT}/api/health').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - default
+
+  prospectly-worker:
+    container_name: prospectly-worker-local
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["node", "dist/src/worker.js"]
+    restart: always
+    env_file:
+      - .env
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: ${PGPORT:-5432}
+      DATABASE_NAME: ${PGDATABASE}
+      DATABASE_USER: ${PGUSER}
+      DATABASE_PASSWORD: ${PGPASSWORD}
+      DATABASE_URL: postgresql://${PGUSER}:${PGPASSWORD}@postgres:${PGPORT:-5432}/${PGDATABASE}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      WORKER_PORT: ${WORKER_PORT}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      prospectly:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "bun",
+          "-e",
+          "fetch('http://localhost:${WORKER_PORT}/worker/health').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    ports:
+      - "${WORKER_PORT}:${WORKER_PORT}"
+    networks:
+      - default
+
+  postgres:
+    image: postgres:18.1
+    container_name: prospectly-postgres-local
+    restart: always
+    ports:
+      - "5433:5432"
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${PGDATABASE}
+      POSTGRES_USER: ${PGUSER}
+      POSTGRES_PASSWORD: ${PGPASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d ${PGDATABASE} -U ${PGUSER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - default
+    volumes:
+      - prospectly-postgres-local-data:/var/lib/postgresql
+
+  redis:
+    image: redis:7-alpine
+    container_name: prospectly-redis-local
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    env_file:
+      - .env
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    networks:
+      - default
+    volumes:
+      - prospectly-redis-local-data:/data
+
+networks:
+  default:
+    name: prospectly-local-net
+    driver: bridge
+
+volumes:
+  prospectly-redis-local-data:
+  prospectly-postgres-local-data:

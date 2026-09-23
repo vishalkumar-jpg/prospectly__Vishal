@@ -1,0 +1,1 @@
+ALTER TABLE "marketplace_claims" ADD COLUMN "verification_triggered_at" timestamp with time zone;

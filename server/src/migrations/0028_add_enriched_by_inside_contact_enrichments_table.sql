@@ -1,0 +1,2 @@
+ALTER TABLE "prospectly"."contact_enrichments" ADD COLUMN "enriched_by" uuid;--> statement-breakpoint
+ALTER TABLE "prospectly"."contact_enrichments" ADD CONSTRAINT "contact_enrichments_enriched_by_users_id_fk" FOREIGN KEY ("enriched_by") REFERENCES "prospectly"."users"("id") ON DELETE set null ON UPDATE no action;

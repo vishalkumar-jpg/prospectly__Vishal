@@ -1,0 +1,3 @@
+DROP INDEX "prospectly"."uniq_interview_txn_candidate_type";--> statement-breakpoint
+CREATE UNIQUE INDEX "uniq_interview_txn_intent_id" ON "prospectly"."recruitment_interview_transactions" USING btree ("intent_id") WHERE intent_id IS NOT NULL AND deleted_at IS NULL;--> statement-breakpoint
+CREATE UNIQUE INDEX "uniq_interview_txn_candidate_type" ON "prospectly"."recruitment_interview_transactions" USING btree ("candidate_id","transaction_type") WHERE deleted_at IS NULL AND transaction_type NOT IN ('flat_topup', 'success_fee_topup');

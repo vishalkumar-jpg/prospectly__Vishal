@@ -1,0 +1,55 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@master
+        env:
+          SERVER_ENV_BASE64: ${{ secrets.SERVER_ENV_BASE64 }}
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          envs: SERVER_ENV_BASE64
+          script: |
+            APP_DIR="/var/www/html/prospectly"
+            
+            # Ensure the directory exists and the user has permissions
+            sudo mkdir -p /var/www/html
+            sudo chown -R $USER:$USER /var/www/html
+            
+            if [ ! -d "$APP_DIR/.git" ]; then
+              git clone https://github.com/vishalkumar-jpg/prospectly__Vishal.git "$APP_DIR"
+            fi
+            
+            cd "$APP_DIR"
+            
+            # Fetch latest changes and reset
+            git fetch origin main
+            git reset --hard origin/main
+            
+            # Decode the base64 secret to a .env file
+            echo "$SERVER_ENV_BASE64" | base64 --decode > .env
+            
+            echo "Building and starting server..."
+            cd "$APP_DIR/server"
+            cp ../.env .env
+            sudo docker compose -f docker-compose-dev.yml up -d --build
+            
+            echo "Building and starting frontend..."
+            cd "$APP_DIR/client"
+            cp ../.env .env
+            sudo docker compose -f docker-compose.yml up -d --build
+            
+            echo "Cleaning old images..."
+            sudo docker image prune -af
+            
+            echo "Running containers:"
+            sudo docker ps

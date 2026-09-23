@@ -1,0 +1,2 @@
+ALTER TABLE "prospectly"."recruitment_job_candidates" ADD CONSTRAINT "recruitment_job_candidates_resume_media_id_media_id_fk" FOREIGN KEY ("resume_media_id") REFERENCES "prospectly"."media"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "prospectly"."recruitment_job_candidates" ADD CONSTRAINT "recruitment_job_candidates_contact_id_contacts_id_fk" FOREIGN KEY ("contact_id") REFERENCES "prospectly"."contacts"("id") ON DELETE no action ON UPDATE no action;

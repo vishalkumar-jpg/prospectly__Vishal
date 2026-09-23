@@ -1,0 +1,1 @@
+ALTER TABLE "prospectly"."organisation" DROP COLUMN "type";

@@ -1,0 +1,34 @@
+export interface ConnectorPipelineCandidate {
+  id: string;
+  candidateName: string;
+  candidateEmail: string | null;
+  currentTitle: string | null;
+  currentCompany: string | null;
+  stage: string;
+  stageUpdatedAt: string;
+  jobTitle: string;
+  jobCompany: string;
+  bountyAmount: number;
+  isSplit: boolean;
+  matchScore: number | null;
+  consentSentAt: string | null;
+  consentAcceptedAt: string | null;
+  consentDeclinedReason: string | null;
+  rejectionReason: string | null;
+  notQualifiedReason: string | null;
+  interviewScheduledAt: string | null;
+  interviewCompletedAt: string | null;
+  inviteSentAt: string | null;
+  source: "consent" | "direct_application";
+  payoutStatus: string | null;
+  payoutCancellationReason: string | null;
+  payoutCancellationNotes: string | null;
+  matchId?: string | null;
+  contactId?: number | null;
+  poolSource?: string | null;
+  resumeFileName?: string | null;
+  matchedAt?: string | null;
+  matchedSignals?: string[];
+  concerns?: string[];
+  gapAnalysis?: unknown;
+}

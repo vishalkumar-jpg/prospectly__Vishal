@@ -1,0 +1,655 @@
+@import "./styles/brand-tokens.css";
+@import "./styles/getting-started-tokens.css";
+@import "./styles/home-tokens.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 236 72% 50%;
+    --primary-foreground: 0 0% 98%;
+    --primary-glow: 236 72% 65%;
+
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 220 14% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 236 72% 50%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 236 72% 50%;
+
+    /* Modern monochromatic tab colors */
+    --tab-make-intro: 217 91% 60%;
+    /* Primary blue */
+    --tab-request-intro: 217 91% 60%;
+    /* Matching blue */
+    --tab-inbox: 217 70% 70%;
+    /* Medium blue */
+    --tab-pipeline: 217 60% 65%;
+    /* Medium-light blue */
+    --tab-archive: 220 30% 60%;
+    /* Blue-gray */
+
+    /* Professional gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(236 72% 50%) 0%, hsl(260 65% 55%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(220 14% 98%) 100%);
+    --gradient-feature: linear-gradient(135deg, hsl(236 72% 50% / 0.1) 0%, hsl(260 65% 55% / 0.05) 100%);
+
+    /* Priority gradients */
+    --gradient-urgent: linear-gradient(135deg, hsl(0 84% 60% / 0.1) 0%, hsl(0 84% 70% / 0.05) 100%);
+    --gradient-high: linear-gradient(135deg, hsl(25 95% 53% / 0.1) 0%, hsl(25 95% 63% / 0.05) 100%);
+    --gradient-medium: linear-gradient(135deg, hsl(217 91% 60% / 0.1) 0%, hsl(217 91% 70% / 0.05) 100%);
+    --gradient-low: linear-gradient(135deg, hsl(215 16% 47% / 0.1) 0%, hsl(215 16% 57% / 0.05) 100%);
+
+    /* Professional shadows */
+    --shadow-card: 0 10px 30px -10px hsl(236 72% 50% / 0.1);
+    --shadow-hero: 0 20px 40px -10px hsl(236 72% 50% / 0.2);
+    --shadow-glow: 0 0 40px hsl(236 72% 65% / 0.3);
+    --shadow-kanban: 0 4px 20px -4px hsl(236 72% 50% / 0.15);
+    --shadow-hover: 0 8px 25px -8px hsl(236 72% 50% / 0.2);
+
+    /* Animation variables */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 236 72% 60%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary-glow: 236 72% 75%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 236 72% 60%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 236 72% 60%;
+
+    --gradient-hero: linear-gradient(135deg, hsl(236 72% 60%) 0%, hsl(260 65% 65%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(222.2 84% 4.9%) 0%, hsl(217.2 32.6% 17.5%) 100%);
+    --gradient-feature: linear-gradient(135deg, hsl(236 72% 60% / 0.1) 0%, hsl(260 65% 65% / 0.05) 100%);
+
+    /* Priority gradients - dark mode */
+    --gradient-urgent: linear-gradient(135deg, hsl(0 84% 30% / 0.2) 0%, hsl(0 84% 40% / 0.1) 100%);
+    --gradient-high: linear-gradient(135deg, hsl(25 95% 35% / 0.2) 0%, hsl(25 95% 45% / 0.1) 100%);
+    --gradient-medium: linear-gradient(135deg, hsl(217 91% 40% / 0.2) 0%, hsl(217 91% 50% / 0.1) 100%);
+    --gradient-low: linear-gradient(135deg, hsl(215 16% 30% / 0.2) 0%, hsl(215 16% 40% / 0.1) 100%);
+
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Tab navigation colors - dark mode */
+    --tab-make-intro: 217 91% 65%;
+    --tab-request-intro: 217 91% 65%;
+    --tab-inbox: 25 95% 58%;
+    --tab-pipeline: 142 76% 41%;
+    --tab-archive: 215 16% 52%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.4) transparent;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* Global scrollbar styling for webkit browsers (Chrome, Safari, Edge) */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.4);
+    border-radius: 10px;
+    transition: background-color 0.15s ease;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.7);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+}
+
+@layer components {
+  .hero-gradient {
+    background: var(--gradient-hero);
+  }
+
+  .card-gradient {
+    background: var(--gradient-card);
+  }
+
+  .feature-gradient {
+    background: var(--gradient-feature);
+  }
+
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+
+  .shadow-hero {
+    box-shadow: var(--shadow-hero);
+  }
+
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .transition-smooth {
+    transition: var(--transition-smooth);
+  }
+
+  .transition-bounce {
+    transition: var(--transition-bounce);
+  }
+
+  /* Priority-based card backgrounds */
+  .priority-urgent {
+    background: var(--gradient-urgent);
+    border-left: 4px solid hsl(0 84% 60%);
+  }
+
+  .priority-high {
+    background: var(--gradient-high);
+    border-left: 4px solid hsl(25 95% 53%);
+  }
+
+  .priority-medium {
+    background: var(--gradient-medium);
+    border-left: 4px solid hsl(217 91% 60%);
+  }
+
+  .priority-low {
+    background: var(--gradient-low);
+    border-left: 4px solid hsl(215 16% 47%);
+  }
+
+  /* Enhanced shadows */
+  .shadow-kanban {
+    box-shadow: var(--shadow-kanban);
+  }
+
+  .shadow-hover {
+    box-shadow: var(--shadow-hover);
+  }
+
+  /* Status pills */
+  .status-pill {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+  }
+
+  /* Bounty display */
+  .bounty-display {
+    @apply text-lg font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent;
+  }
+
+  /* Animation classes */
+  .animate-pulse-slow {
+    animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse-slow {
+
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    50% {
+      opacity: 0.8;
+      transform: scale(1.02);
+    }
+  }
+
+  .hover-scale {
+    transition: var(--transition-smooth);
+  }
+
+  .hover-scale:hover {
+    transform: scale(1.02);
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes slide-in-fade {
+    0% {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Text utilities */
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-height: 1.3;
+  }
+
+  /* Modern tab navigation styles */
+  .tab-make-intro[data-state="active"] {
+    background-color: hsl(var(--tab-make-intro)) !important;
+    color: white !important;
+  }
+
+  .tab-request-intro[data-state="active"] {
+    background-color: hsl(var(--tab-request-intro)) !important;
+    color: white !important;
+  }
+
+  .tab-inbox[data-state="active"] {
+    background-color: hsl(var(--tab-inbox)) !important;
+    color: white !important;
+  }
+
+  .tab-pipeline[data-state="active"] {
+    background-color: hsl(var(--tab-pipeline)) !important;
+    color: white !important;
+  }
+
+  .tab-archive[data-state="active"] {
+    background-color: hsl(var(--tab-archive)) !important;
+    color: white !important;
+  }
+
+  .kanban-scroll {
+    overflow-x: auto;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.4) transparent;
+    transition: scrollbar-color 0.1s ease;
+    scrollbar-gutter: stable;
+  }
+
+  .kanban-scroll:hover,
+  .kanban-scroll:active {
+    scrollbar-color: hsl(var(--muted-foreground) / 0.7) transparent;
+  }
+
+  /* Horizontal scrollbar styling for kanban */
+  .kanban-scroll::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+  }
+
+  .kanban-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .kanban-scroll::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.4);
+    border-radius: 10px;
+    transition: all 0.1s ease;
+  }
+
+  .kanban-scroll:hover::-webkit-scrollbar-thumb,
+  .kanban-scroll:active::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.7);
+  }
+
+  .kanban-scroll::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.8);
+  }
+
+  .kanban-scroll::-webkit-scrollbar-button:horizontal:start:decrement {
+    display: none;
+    width: 6px;
+    background-size: 6px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='15 18 9 12 15 6'%3E%3C/polyline%3E%3C/svg%3E");
+  }
+
+  .dark .kanban-scroll::-webkit-scrollbar-button:horizontal:start:decrement {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='15 18 9 12 15 6'%3E%3C/polyline%3E%3C/svg%3E");
+  }
+
+  .kanban-scroll:hover::-webkit-scrollbar-button:horizontal:start:decrement {
+    display: block;
+  }
+
+  .kanban-scroll::-webkit-scrollbar-button:horizontal:end:increment {
+    display: none;
+    width: 6px;
+    background-size: 6px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='9 18 15 12 9 6'%3E%3C/polyline%3E%3C/svg%3E");
+  }
+
+  .dark .kanban-scroll::-webkit-scrollbar-button:horizontal:end:increment {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='9 18 15 12 9 6'%3E%3C/polyline%3E%3C/svg%3E");
+  }
+
+  .kanban-scroll:hover::-webkit-scrollbar-button:horizontal:end:increment {
+    display: block;
+  }
+
+  .kanban-scroll::-webkit-scrollbar-button:horizontal:start:increment,
+  .kanban-scroll::-webkit-scrollbar-button:horizontal:end:decrement {
+    display: none;
+  }
+
+  /* On touch devices (no hover), always show the kanban scrollbar thumb */
+  @media (pointer: coarse) {
+    .kanban-scroll {
+      scrollbar-color: hsl(var(--muted-foreground) / 0.4) transparent;
+    }
+
+    .kanban-scroll::-webkit-scrollbar-thumb {
+      background: hsl(var(--muted-foreground) / 0.4);
+    }
+  }
+
+  .thin-scroll {
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.4) transparent;
+    transition: scrollbar-color 0.1s ease;
+    scrollbar-gutter: stable;
+  }
+
+  .thin-scroll:hover,
+  .thin-scroll:active {
+    scrollbar-color: hsl(var(--muted-foreground) / 0.7) transparent;
+  }
+
+  /* Thin scrollbar utility */
+  .thin-scroll::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .thin-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .thin-scroll::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.4);
+    border-radius: 10px;
+    transition: all 0.1s ease;
+  }
+
+  .thin-scroll:hover::-webkit-scrollbar-thumb,
+  .thin-scroll:active::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.7);
+  }
+
+  .thin-scroll::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.8);
+  }
+
+  /* Thin horizontal buttons */
+  .thin-scroll::-webkit-scrollbar-button:horizontal:start:decrement {
+    display: none;
+    width: 16px;
+    background-size: 10px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='15 18 9 12 15 6'%3E%3C/polyline%3E%3C/svg%3E");
+  }
+
+  .thin-scroll:hover::-webkit-scrollbar-button:horizontal:start:decrement {
+    display: block;
+  }
+
+  .dark .thin-scroll::-webkit-scrollbar-button:horizontal:start:decrement {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='15 18 9 12 15 6'%3E%3C/polyline%3E%3C/svg%3E");
+  }
+
+  .thin-scroll::-webkit-scrollbar-button:horizontal:end:increment {
+    display: none;
+    width: 16px;
+    background-size: 10px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='9 18 15 12 9 6'%3E%3C/polyline%3E%3C/svg%3E");
+  }
+
+  .thin-scroll:hover::-webkit-scrollbar-button:horizontal:end:increment {
+    display: block;
+  }
+
+  .dark .thin-scroll::-webkit-scrollbar-button:horizontal:end:increment {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='9 18 15 12 9 6'%3E%3C/polyline%3E%3C/svg%3E");
+  }
+
+  /* Thin vertical buttons */
+  .thin-scroll::-webkit-scrollbar-button:vertical:start:decrement {
+    display: none;
+    height: 16px;
+    background-size: 10px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='18 15 12 9 6 15'%3E%3C/polyline%3E%3C/svg%3E");
+  }
+
+  .thin-scroll:hover::-webkit-scrollbar-button:vertical:start:decrement {
+    display: block;
+  }
+
+  .dark .thin-scroll::-webkit-scrollbar-button:vertical:start:decrement {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='18 15 12 9 6 15'%3E%3C/polyline%3E%3C/svg%3E");
+  }
+
+  .thin-scroll::-webkit-scrollbar-button:vertical:end:increment {
+    display: none;
+    height: 16px;
+    background-size: 10px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  }
+
+  .thin-scroll:hover::-webkit-scrollbar-button:vertical:end:increment {
+    display: block;
+  }
+
+  .dark .thin-scroll::-webkit-scrollbar-button:vertical:end:increment {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  }
+
+  .thin-scroll::-webkit-scrollbar-button:horizontal:start:increment,
+  .thin-scroll::-webkit-scrollbar-button:horizontal:end:decrement,
+  .thin-scroll::-webkit-scrollbar-button:vertical:start:increment,
+  .thin-scroll::-webkit-scrollbar-button:vertical:end:decrement {
+    display: none;
+  }
+
+  /* Recent Peer Feedback: thinner (6px) */
+  .recent-peer-feedback-scroll {
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.4) transparent;
+    transition: scrollbar-color 0.1s ease;
+    scrollbar-gutter: stable;
+  }
+
+  .recent-peer-feedback-scroll:hover,
+  .recent-peer-feedback-scroll:active {
+    scrollbar-color: hsl(var(--muted-foreground) / 0.7) transparent;
+  }
+
+  .recent-peer-feedback-scroll::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .recent-peer-feedback-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .recent-peer-feedback-scroll::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.4);
+    border-radius: 10px;
+    transition: all 0.1s ease;
+  }
+
+  .recent-peer-feedback-scroll:hover::-webkit-scrollbar-thumb,
+  .recent-peer-feedback-scroll:active::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.7);
+  }
+
+  .recent-peer-feedback-scroll::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.8);
+  }
+
+  .dropdown-scroll {
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.4) transparent;
+    transition: scrollbar-color 0.1s ease;
+  }
+
+  .dropdown-scroll:hover,
+  .dropdown-scroll:active {
+    scrollbar-color: hsl(var(--muted-foreground) / 0.7) transparent;
+  }
+
+  .dropdown-scroll::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  .dropdown-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .dropdown-scroll::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.4);
+    border-radius: 10px;
+  }
+
+  .dropdown-scroll:hover::-webkit-scrollbar-thumb,
+  .dropdown-scroll:active::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.7);
+  }
+
+  /* Hide scrollbar but keep scrollable */
+  .hide-scroll {
+    scrollbar-width: none !important; /* Firefox */
+    -ms-overflow-style: none !important; /* IE/Edge */
+  }
+
+  .hide-scroll::-webkit-scrollbar {
+    display: none !important; /* Chrome/Safari/Opera */
+  }
+
+  /* Confetti animation for verification success */
+  @keyframes confetti-fall {
+    0% {
+      transform: translateY(-10px) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(30px) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  .animate-confetti-fall {
+    animation: confetti-fall 1.5s ease-out forwards;
+  }
+}
+
+/* TipTap rich-text editor empty-state placeholder */
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: hsl(var(--muted-foreground));
+  opacity: 0.7;
+  pointer-events: none;
+  height: 0;
+  float: left;
+}

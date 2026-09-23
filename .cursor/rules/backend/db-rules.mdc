@@ -1,0 +1,164 @@
+---
+description: when we are performing any task and that task is related to database then only apply this file
+alwaysApply: false
+---
+
+# Database Rules (Drizzle ORM + PostgreSQL)
+
+## Schema Definition
+- **Table Names**: Use `snake_case` for table names in PostgreSQL (e.g., `user_profiles`).
+- **Column Names**: Use `snake_case` for database columns, but `camelCase` for the TypeScript property (e.g., `createdAt: timestamp('created_at').defaultNow()`).
+- **Location**: Define all schemas in `server/src/modules/database/schema/`.
+- **Validation**: Use Zod schemas (via `drizzle-zod`) for all data validation and type inference.
+- **Audit Fields**: Every table should include `id`, `createdAt`, `updatedAt`, `deletedAt`, `createdBy`, and `updatedBy`.
+
+## PostgreSQL Best Practices
+- **Indexing**: Always create indexes on foreign keys and columns used in frequent `WHERE` or `ORDER BY` clauses.
+- **Data Types**: Use `varchar` for strings, `timestamp` for dates, and `decimal` for monetary values. Avoid `serial` if using KSUIDs.
+- **Naming**: Ensure all constraints (PK, FK, Unique) have descriptive names if not auto-generated.
+
+## Query & Transaction Management
+- **Transactions**: Use `db.transaction()` for multi-step operations. Ensure ALL operations within the transaction use the `tx` object.
+- **Query Patterns**: Use the Drizzle Query API for simple reads and the SQL-like API for complex joins or aggregations.
+- **Soft Deletes**: Implement soft deletes by filtering for `deletedAt IS NULL` in all queries unless explicitly requested otherwise.
+- **Audit Tracking**: Pass `{ data: { userId } }` to the save/update methods to ensure audit fields are correctly populated.
+
+## Migrations
+- Use `drizzle-kit` for generating migrations.
+- Always review the generated SQL in the migration file BEFORE applying it to ensure it matches the schema changes.
+
+## UTC Date/Timestamp Handling
+
+### Core Requirement
+**ALL dates and timestamps MUST be stored in UTC format in the database.** This ensures consistency across timezones and prevents timezone-related bugs.
+
+### Utility File Location
+- **Path**: `server/src/utils/dayjs.ts`
+- **Import**: `import { toUTC, utcDayjs } from '@/utils/dayjs';`
+
+### Functions Available
+
+#### `toUTC(date?)` - For Database Storage
+- **Purpose**: Converts a date to a UTC Date object suitable for database insert/update operations.
+- **Returns**: `Date` object in UTC
+- **Use When**: 
+  - Inserting or updating timestamp columns in the database
+  - Setting audit fields (`createdAt`, `updatedAt`, `deletedAt`)
+  - Storing any date value that will be persisted
+
+**Examples:**
+```typescript
+// Current timestamp
+await db.insert(users).values({
+  createdAt: toUTC(),
+  updatedAt: toUTC(),
+});
+
+// From a specific date
+await db.update(users)
+  .set({ updatedAt: toUTC(new Date()) })
+  .where(eq(users.id, userId));
+
+// In audit tracking
+await db.update(contacts)
+  .set({ 
+    ...data, 
+    updatedAt: toUTC() 
+  });
+```
+
+#### `utcDayjs(date?)` - For Date Operations
+- **Purpose**: Returns a UTC dayjs object for date calculations, comparisons, and formatting.
+- **Returns**: `dayjs.Dayjs` object in UTC mode
+- **Use When**:
+  - Performing date arithmetic (add, subtract)
+  - Comparing dates
+  - Formatting dates for display
+  - Parsing dates from strings/APIs
+
+**Examples:**
+```typescript
+// Date calculations
+const expiresAt = utcDayjs().add(7, "day").toDate();
+
+// Date comparisons
+const recordStart = utcDayjs(conferenceRecord.startTime!);
+const recordEnd = utcDayjs(conferenceRecord.endTime!);
+const duration = recordEnd.diff(recordStart, "minute");
+
+// Formatting
+const formatted = utcDayjs(date).format("YYYY-MM-DD HH:mm:ss");
+```
+
+### Common Patterns
+
+#### Pattern 1: Database Insert/Update
+```typescript
+import { toUTC } from '@/utils/dayjs';
+
+await db.insert(table).values({
+  createdAt: toUTC(),
+  updatedAt: toUTC(),
+  someDateField: toUTC(inputDate),
+});
+```
+
+#### Pattern 2: Date Calculations Before Storage
+```typescript
+import { toUTC, utcDayjs } from '@/utils/dayjs';
+
+// Calculate future date, then convert to UTC Date for storage
+const futureDate = utcDayjs().add(30, "days").toDate();
+await db.insert(table).values({
+  expiresAt: toUTC(futureDate),
+});
+```
+
+#### Pattern 3: Date Comparisons in Queries
+```typescript
+import { utcDayjs } from '@/utils/dayjs';
+
+const cutoffDate = utcDayjs().subtract(7, "days").toDate();
+const expiredRecords = await db
+  .select()
+  .from(table)
+  .where(lte(table.createdAt, cutoffDate));
+```
+
+### Common Mistakes to Avoid
+
+❌ **DON'T**: Use `new Date()` directly for database storage
+```typescript
+// WRONG - uses local timezone
+await db.insert(table).values({ createdAt: new Date() });
+```
+
+❌ **DON'T**: Use `Date.now()` for timestamps
+```typescript
+// WRONG - returns number, not UTC Date
+await db.insert(table).values({ createdAt: Date.now() });
+```
+
+❌ **DON'T**: Mix timezone-aware and timezone-naive dates
+```typescript
+// WRONG - inconsistent timezone handling
+const date1 = new Date();
+const date2 = toUTC();
+```
+
+✅ **DO**: Always use `toUTC()` for database operations
+```typescript
+// CORRECT - consistent UTC storage
+await db.insert(table).values({ createdAt: toUTC() });
+```
+
+### When to Use Which Function
+
+| Scenario | Function | Reason |
+|----------|----------|--------|
+| Database insert/update | `toUTC()` | Returns Date object for storage |
+| Date calculations | `utcDayjs()` | Fluent API for operations |
+| Date comparisons | `utcDayjs()` | Better comparison methods |
+| Formatting dates | `utcDayjs()` | Rich formatting options |
+| Current timestamp for DB | `toUTC()` | Direct Date object |
+| Future/past date calculation | `utcDayjs().add/subtract().toDate()` | Calculate then convert |

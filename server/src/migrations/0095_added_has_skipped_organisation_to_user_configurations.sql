@@ -1,0 +1,1 @@
+ALTER TABLE "prospectly"."user_configurations" ADD COLUMN "has_skipped_organisation" boolean DEFAULT false NOT NULL;

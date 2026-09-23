@@ -1,0 +1,706 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1770277797210,
+      "tag": "0000_initial-migration",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1770297104201,
+      "tag": "0001_add_verification_triggered_at_columns_in_marketplace_claims_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1770314297080,
+      "tag": "0002_removed_cascade_delete",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1770316843594,
+      "tag": "0003_removed_cascade_delete_and_removed_required",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1770316843694,
+      "tag": "0004_add_dispute_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1770788749258,
+      "tag": "0005_add_unique_constraint_marketplace_share_events",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1770910795393,
+      "tag": "0006_migrate_to_prospectly_schema",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1770988002109,
+      "tag": "0007_added_bounty_calculation_attempts_in_contact_relationships",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1772004675652,
+      "tag": "0008_added_industries_and_departments_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1772038600395,
+      "tag": "0009_added_recruitment_jobs_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1772086485165,
+      "tag": "0010_added_missing_columns_in_recruitment_jobs_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1772094023375,
+      "tag": "0011_added_recruitment_bounty_tiers_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1772178648008,
+      "tag": "0012_added_close_job_reason_in_recruitment_jobs_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1772214737690,
+      "tag": "0013_added_recruitment_job_share_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1772271319822,
+      "tag": "0014_added_recruitment_stages_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1772277919587,
+      "tag": "0015_added_recruitment_job_candidates_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1772277919588,
+      "tag": "0016_added_recruitment_candidate_stage_history_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1773135760630,
+      "tag": "0017_added_recruitment_job_pool_matches_table_and_relevant_columns_in_other_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1773138365138,
+      "tag": "0018_added_recruitment_candidate_workflow_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1773149522800,
+      "tag": "0019_add_relation_of_recruitment_job_candidates_table_fields",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1773221355302,
+      "tag": "0020_added_recruitment_interview_transactions_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1773241716940,
+      "tag": "0021_added_recruitment_interview_meeting_and_history_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1773654678866,
+      "tag": "0022_add_pipeline_filter_stages_to_user_configurations",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1773669076668,
+      "tag": "0023_add_max_enrichment_request-column-in-subcription-table",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1773671776687,
+      "tag": "0024_add_status_column_in_system_feedback",
+      "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1773749920021,
+      "tag": "0025_add_contact_import_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1774267254130,
+      "tag": "0026_add_enrichment_source_inside_enrichments_related_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1774280329832,
+      "tag": "0027_add_unique_contact_id_for_enrichment_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "7",
+      "when": 1774326896066,
+      "tag": "0028_add_enriched_by_inside_contact_enrichments_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1774521093932,
+      "tag": "0029_add_external_person_id_to_contact_enrichments_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1774523240627,
+      "tag": "0030_add_contact_resumes_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1774532695457,
+      "tag": "0031_add_is_typesense_synced_columns_in_contacts_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1774854518918,
+      "tag": "0032_add_new_column_in_contact_file_import",
+      "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1775017923719,
+      "tag": "0033_add_last_login_at_in_user_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "7",
+      "when": 1775126969030,
+      "tag": "0034_add_candidate_evaluation_columns",
+      "breakpoints": true
+    },
+    {
+      "idx": 35,
+      "version": "7",
+      "when": 1775564638013,
+      "tag": "0035_updated_recruitment_pricing_related_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1775716024566,
+      "tag": "0036_add_upload_id_in_contact_import",
+      "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "7",
+      "when": 1775738101343,
+      "tag": "0037_create_recruitment_payout_history_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "7",
+      "when": 1775816991364,
+      "tag": "0038_update_recruitment_payout_history_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 39,
+      "version": "7",
+      "when": 1775902588772,
+      "tag": "0039_add_connector_upload_fields_to_pool_matches",
+      "breakpoints": true
+    },
+    {
+      "idx": 40,
+      "version": "7",
+      "when": 1776167179240,
+      "tag": "0040_added_recruitment_multiple_connector_payout_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 41,
+      "version": "7",
+      "when": 1776167977892,
+      "tag": "0041_added_recruitment_upload_jobs_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 42,
+      "version": "7",
+      "when": 1776177107759,
+      "tag": "0042_add_candidate_email_hash_to_recruitment_upload_jobs",
+      "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "7",
+      "when": 1776787595587,
+      "tag": "0043_add_intro_to_import_tab_mode",
+      "breakpoints": true
+    },
+    {
+      "idx": 44,
+      "version": "7",
+      "when": 1777010828655,
+      "tag": "0044_add_suggested_bounty_amount_inside_recruitment_job_pricing",
+      "breakpoints": true
+    },
+    {
+      "idx": 45,
+      "version": "7",
+      "when": 1777024404125,
+      "tag": "0045_import_credit_allocation_columns",
+      "breakpoints": true
+    },
+    {
+      "idx": 46,
+      "version": "7",
+      "when": 1777384303853,
+      "tag": "0046_add_success_fees_related_columns_in_recruitment_related_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "7",
+      "when": 1777385597965,
+      "tag": "0047_add_indexes_in_contact_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 48,
+      "version": "7",
+      "when": 1777547095110,
+      "tag": "0048_add_indexes_in_contact",
+      "breakpoints": true
+    },
+    {
+      "idx": 49,
+      "version": "7",
+      "when": 1777878571903,
+      "tag": "0049_add_success_fee_payout_timing_related_columns",
+      "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "7",
+      "when": 1777958935795,
+      "tag": "0050_add_contacts_with_linkedin_index",
+      "breakpoints": true
+    },
+    {
+      "idx": 51,
+      "version": "7",
+      "when": 1777987103073,
+      "tag": "0051_rename_recruitment_job_pricing_to_prices",
+      "breakpoints": true
+    },
+    {
+      "idx": 52,
+      "version": "7",
+      "when": 1777992197245,
+      "tag": "0052_added_salary_range_notes_to_recruitment_job_prices",
+      "breakpoints": true
+    },
+    {
+      "idx": 53,
+      "version": "7",
+      "when": 1778171215909,
+      "tag": "0053_added_payout_cancellation_notes_in_recruitment_payout",
+      "breakpoints": true
+    },
+    {
+      "idx": 54,
+      "version": "7",
+      "when": 1778223568734,
+      "tag": "0054_add_columns_in_users_configuration_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 55,
+      "version": "7",
+      "when": 1778500816754,
+      "tag": "0055_contact-import-reminders",
+      "breakpoints": true
+    },
+    {
+      "idx": 56,
+      "version": "7",
+      "when": 1778563714192,
+      "tag": "0056_add_is_primary_to_contact_provider_token",
+      "breakpoints": true
+    },
+    {
+      "idx": 57,
+      "version": "7",
+      "when": 1778596715567,
+      "tag": "0057_created_ai_usage_logs",
+      "breakpoints": true
+    },
+    {
+      "idx": 58,
+      "version": "7",
+      "when": 1779092589472,
+      "tag": "0058_add_recruitment_jobs_notifications_related_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 59,
+      "version": "7",
+      "when": 1779096420445,
+      "tag": "0059_add_requester_archive_fields_and_cancelled_status",
+      "breakpoints": true
+    },
+    {
+      "idx": 60,
+      "version": "7",
+      "when": 1779715575678,
+      "tag": "0060_add_user_members_metrics_indexes",
+      "breakpoints": true
+    },
+    {
+      "idx": 61,
+      "version": "7",
+      "when": 1779779796450,
+      "tag": "0061_add_source_column_in_contact_import",
+      "breakpoints": true
+    },
+    {
+      "idx": 62,
+      "version": "7",
+      "when": 1779968109808,
+      "tag": "0062_add_account_delete_survay_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 63,
+      "version": "7",
+      "when": 1780312471962,
+      "tag": "0063_create_introduction_request_prices",
+      "breakpoints": true
+    },
+    {
+      "idx": 64,
+      "version": "7",
+      "when": 1780394844731,
+      "tag": "0064_add_decouple_connector_payout_timing",
+      "breakpoints": true
+    },
+    {
+      "idx": 65,
+      "version": "7",
+      "when": 1780412379225,
+      "tag": "0065_add_flat_fees_modal",
+      "breakpoints": true
+    },
+    {
+      "idx": 66,
+      "version": "7",
+      "when": 1780642236169,
+      "tag": "0066_add_partial_indexing_on_recruitment_interview_transactions",
+      "breakpoints": true
+    },
+    {
+      "idx": 67,
+      "version": "7",
+      "when": 1780901984655,
+      "tag": "0067_update_recruitment_job_prices_columns",
+      "breakpoints": true
+    },
+    {
+      "idx": 68,
+      "version": "7",
+      "when": 1780909050872,
+      "tag": "0068_drop_unique_index_recruitment_notifications",
+      "breakpoints": true
+    },
+    {
+      "idx": 69,
+      "version": "7",
+      "when": 1781086660367,
+      "tag": "0069_organisation_module_access_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 70,
+      "version": "7",
+      "when": 1781160998465,
+      "tag": "0070_add_introduction_request_republish_columns",
+      "breakpoints": true
+    },
+    {
+      "idx": 71,
+      "version": "7",
+      "when": 1781673001466,
+      "tag": "0071_add_evaluation_retry_count_in_recruitment_job_candidates",
+      "breakpoints": true
+    },
+    {
+      "idx": 72,
+      "version": "7",
+      "when": 1781794102301,
+      "tag": "0072_added_working_hours_to_user_configurations",
+      "breakpoints": true
+    },
+    {
+      "idx": 73,
+      "version": "7",
+      "when": 1782205591643,
+      "tag": "0073_add_has_skip_bank_account",
+      "breakpoints": true
+    },
+    {
+      "idx": 74,
+      "version": "7",
+      "when": 1782211887506,
+      "tag": "0074_add_gap_analysis_to_recruitment_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 75,
+      "version": "7",
+      "when": 1782307644266,
+      "tag": "0075_add_recruitment_job_collaborators",
+      "breakpoints": true
+    },
+    {
+      "idx": 76,
+      "version": "7",
+      "when": 1782380671265,
+      "tag": "0076_add_panel_column_in_roles_permission_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 77,
+      "version": "7",
+      "when": 1782463189146,
+      "tag": "0077_global_payouts_recipient_fields",
+      "breakpoints": true
+    },
+    {
+      "idx": 78,
+      "version": "7",
+      "when": 1782497468444,
+      "tag": "0078_widen_global_payout_id_columns",
+      "breakpoints": true
+    },
+    {
+      "idx": 79,
+      "version": "7",
+      "when": 1782539662886,
+      "tag": "0079_add_payout_fee_breakdown_columns",
+      "breakpoints": true
+    },
+    {
+      "idx": 80,
+      "version": "7",
+      "when": 1782917575663,
+      "tag": "0080_add_json_columns_inside_organisation_module_access",
+      "breakpoints": true
+    },
+    {
+      "idx": 81,
+      "version": "7",
+      "when": 1783506073228,
+      "tag": "0081_added_recruitment_assessment_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 82,
+      "version": "7",
+      "when": 1783664433707,
+      "tag": "0082_add_not_qualified_reason_inside_recruitment_job_candidates_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 83,
+      "version": "7",
+      "when": 1783700000000,
+      "tag": "0083_consolidate_pipeline_filters_to_user_filter",
+      "breakpoints": true
+    },
+    {
+      "idx": 84,
+      "version": "7",
+      "when": 1783800000000,
+      "tag": "0084_add_recruitment_connector_blocks",
+      "breakpoints": true
+    },
+    {
+      "idx": 85,
+      "version": "7",
+      "when": 1783900000000,
+      "tag": "0085_add_workspace_focus_to_user_configurations",
+      "breakpoints": true
+    },
+    {
+      "idx": 86,
+      "version": "7",
+      "when": 1784900000000,
+      "tag": "0086_replace_workspace_focus_with_preferred_and_primary",
+      "breakpoints": true
+    },
+    {
+      "idx": 87,
+      "version": "7",
+      "when": 1785153508925,
+      "tag": "0087_add_recruitment_timeline_snapshots",
+      "breakpoints": true
+    },
+    {
+      "idx": 88,
+      "version": "7",
+      "when": 1785156287586,
+      "tag": "0088_created_recruitment_job_price_change_history",
+      "breakpoints": true
+    },
+    {
+      "idx": 89,
+      "version": "7",
+      "when": 1785767334633,
+      "tag": "0089_add_recruitment_email_logs",
+      "breakpoints": true
+    },
+    {
+      "idx": 90,
+      "version": "7",
+      "when": 1785778750219,
+      "tag": "0090_rename_and_split_connector_payout_wait_days",
+      "breakpoints": true
+    },
+    {
+      "idx": 91,
+      "version": "7",
+      "when": 1786111574818,
+      "tag": "0091_add_recruitment_jobs_countries",
+      "breakpoints": true
+    },
+    {
+      "idx": 92,
+      "version": "7",
+      "when": 1786540459648,
+      "tag": "0092_add_contact_resume_search_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 93,
+      "version": "7",
+      "when": 1786621005859,
+      "tag": "0093_add_recruitment_email_log_pipeline_fields",
+      "breakpoints": true
+    },
+    {
+      "idx": 94,
+      "version": "7",
+      "when": 1787212072564,
+      "tag": "0094_created_notification_preferences_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 95,
+      "version": "7",
+      "when": 1787574119602,
+      "tag": "0095_added_has_skipped_organisation_to_user_configurations",
+      "breakpoints": true
+    },
+    {
+      "idx": 96,
+      "version": "7",
+      "when": 1787666893673,
+      "tag": "0096_remove_organisation_type_column",
+      "breakpoints": true
+    },
+    {
+      "idx": 97,
+      "version": "7",
+      "when": 1787814877798,
+      "tag": "0097_add_blobal_search_related_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 98,
+      "version": "7",
+      "when": 1788948361908,
+      "tag": "0098_add_notification_snapshot_to_recruitment_job_settings",
+      "breakpoints": true
+    },
+    {
+      "idx": 99,
+      "version": "7",
+      "when": 1789024865519,
+      "tag": "0099_allow_repeated_recruitment_topups",
+      "breakpoints": true
+    }
+  ]
+}

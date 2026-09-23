@@ -1,0 +1,52 @@
+/**
+ * Getting Started / Import Modal v4 palette — derived from client/design/getting_started_v4.html
+ * HSL triplets (no hsl() wrapper) for use with Tailwind `hsl(var(--token) / <alpha-value>)`.
+ */
+@layer base {
+  :root {
+    /** Brand palette aliases — canonical values in brand-tokens.css */
+    --gs-accent-from: var(--brand-accent-from);
+    --gs-accent-to: var(--brand-accent-to);
+    --gs-amethyst: var(--brand-amethyst);
+    --gs-rose: var(--brand-rose);
+    --gs-sky: var(--brand-sky);
+    --gs-success: var(--brand-success);
+    --gs-warning: var(--brand-warning);
+    /** Error / failed verification (aligned with destructive reds in verify UI) */
+    --gs-destructive: var(--brand-destructive);
+    --gs-accent-foreground: var(--brand-foreground);
+    /** OAuth / brand surfaces (matched-source tiles) — getting-started specific */
+    --gs-linkedin: 201 100% 41%;
+    --gs-oauth-google-surface: 33 86% 94%;
+    --gs-oauth-microsoft-surface: 214 77% 95%;
+  }
+
+  .dark {
+    --gs-linkedin: 201 100% 55%;
+    --gs-oauth-google-surface: 33 45% 22%;
+    --gs-oauth-microsoft-surface: 214 35% 24%;
+  }
+}
+
+@layer components {
+  /** Amethyst–rose brand gradient (Getting Started verify / CTAs) */
+  .bg-gs-brand-gradient {
+    background-image: linear-gradient(
+      135deg,
+      hsl(var(--gs-amethyst)),
+      hsl(var(--gs-rose))
+    );
+  }
+
+  .text-gs-brand-gradient {
+    background-image: linear-gradient(
+      135deg,
+      hsl(var(--gs-amethyst)),
+      hsl(var(--gs-rose))
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+}

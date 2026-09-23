@@ -1,0 +1,95 @@
+---
+description: Project overview, tech stack, and directory structure for the Promo-Beacon frontend application
+globs: client/**/*
+---
+
+# Project Overview
+
+## Tech Stack
+
+### Frontend (Client)
+- **React 18** - UI library
+- **TypeScript 5.5** - Type safety
+- **Vite 5** - Build tool and dev server
+- **TailwindCSS 3** - CSS framework
+- **Shadcn/Radix UI** - UI components
+
+### State Management & Data Fetching
+- **TanStack Query (React Query) v5** - Server state management
+- **React Hook Form** - Form management
+- **Zod** - Schema validation
+
+### Backend (Server)
+- **NestJS 11** - Node.js framework
+- **Drizzle ORM** - TypeScript ORM
+- **PostgreSQL** - Database
+- **ioredis** - Redis client for BullMQ
+
+### Key Libraries
+- **Axios** - HTTP client
+- **BullMQ** - Message queue for background tasks
+- **Stripe** - Payment processing
+- **Lucide React** - Icons
+- **Dayjs** - Date manipulation
+
+## Project Structure
+
+```
+prospectly/
+├── client/                    # React frontend application
+│   ├── src/
+│   │   ├── components/        # UI components
+│   │   ├── hooks/             # Custom hooks
+│   │   ├── lib/               
+│   │   │   ├── api/           # Manual API service layer
+│   │   │   ├── dayjs.ts       # Date configuration
+│   │   │   └── queryClient.ts # React Query setup
+│   │   ├── pages/             # Page components
+│   │   ├── schemas/           # Zod validation schemas
+│   │   ├── types/             # TypeScript types
+│   │   └── utils/             # Helper functions
+│   └── package.json
+├── server/                    # NestJS backend application
+│   ├── src/
+│   │   ├── modules/           # Feature modules
+│   │   ├── database/          # Drizzle schema and config
+│   │   ├── auth/              # Auth logic
+│   │   ├── main.ts            # Entry point
+│   │   └── worker.ts          # BullMQ worker entry
+│   └── package.json
+└── package.json               # Root package.json
+```
+
+## Path Aliases
+
+Configure in `tsconfig.json`:
+
+```typescript
+// Client
+import { Component } from "@/components/Component";
+import { api } from "@/lib/api";
+```
+
+## Scripts
+
+```bash
+# Development
+bun run dev              # Start client, server, and worker
+
+# Client only
+cd client && bun run dev
+
+# Server only
+cd server && bun run dev
+
+# Backend Worker
+cd server && bun run worker:dev
+```
+
+## Key Patterns
+
+1. **Manual API Layer** - API calls are defined in `client/src/lib/api/` using Axios.
+2. **Drizzle ORM** - Schema-first database development with Drizzle Kit for migrations.
+3. **Type Safety** - Shared types or consistent definitions between client and server.
+4. **BullMQ** - Background processing for long-running tasks like contact enrichment.
+

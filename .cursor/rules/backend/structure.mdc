@@ -1,0 +1,36 @@
+---
+description: Enforce modular project structure, naming conventions, and file organization for the NestJS backend
+globs: server/src/**/*
+alwaysApply: true
+---
+
+# Project Structure & Naming Conventions
+
+## Modular Architecture
+- **Location**: All feature modules MUST be placed in `server/src/modules/`.
+- **Module Structure**: Each module folder should be self-contained and typically include:
+    - `module-name.module.ts`: Module definition.
+    - `module-name.controller.ts`: API endpoints.
+    - `module-name.service.ts`: Business logic.
+    - `module-name.dto.ts`: Data Transfer Objects for validation.
+    - `module-name.response.ts`: Response types/interfaces.
+    - `module-name.constants.ts`: Module-specific constants.
+    - `module-name.utils.ts` or `module-name.helpers.ts`: Utility functions.
+
+## Naming Conventions
+- **Directories**: Use `kebab-case` (e.g., `user-profile`, `auth-handler`).
+- **Files**: Use `kebab-case` with a type suffix and `.ts` extension:
+    - `*.controller.ts`, `*.service.ts`, `*.module.ts`, `*.dto.ts`, `*.entity.ts`.
+- **Classes**: Use `PascalCase` with a descriptive suffix (e.g., `UserService`, `CreateUserDto`).
+- **Methods & Variables**: Use `camelCase` (e.g., `updateUser`, `isDeleted`).
+- **Constants**: Use `UPPER_SNAKE_CASE` (e.g., `MAX_RETRY_COUNT`).
+
+## File Organization Rules
+- **Controller Responsibilities**: Controllers should ONLY handle request routing and call service methods. No business logic.
+- **Service Responsibilities**: Services should contain ALL business logic, database interactions (via repository/Drizzle), and error handling.
+- **DTO Usage**: Use `class-validator` decorators in DTOs for strictly validating ALL incoming request data.
+- **Shared Resources**: Place shared services, decorators, guards, and filters in their respective global folders within `server/src/` (e.g., `src/services/`, `src/guards/`).
+
+## Module Registration
+- Ensure every new module is registered in `server/src/app.module.ts`.
+- If using Drizzle entities, register them in the `DatabaseEntityModule`.

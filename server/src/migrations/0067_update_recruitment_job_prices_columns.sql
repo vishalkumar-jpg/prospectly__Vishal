@@ -1,0 +1,2 @@
+ALTER TABLE "prospectly"."recruitment_job_prices" RENAME COLUMN "flat_publish_fee_percent" TO "flat_deposit_fee_percent";--> statement-breakpoint
+ALTER TABLE "prospectly"."recruitment_job_prices" RENAME COLUMN "flat_charged_at_publish_amount" TO "flat_deposit_amount";

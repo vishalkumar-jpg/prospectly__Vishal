@@ -1,0 +1,1 @@
+ALTER TYPE "prospectly"."import_tab_mode" ADD VALUE IF NOT EXISTS 'intro' BEFORE 'automatic';

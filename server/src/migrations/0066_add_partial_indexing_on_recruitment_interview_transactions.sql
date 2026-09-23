@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "uniq_interview_txn_flat_deposit_job" ON "prospectly"."recruitment_interview_transactions" USING btree ("job_id") WHERE transaction_type = 'flat_deposit' AND deleted_at IS NULL;

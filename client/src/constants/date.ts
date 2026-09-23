@@ -1,0 +1,9 @@
+export const DATE_FORMATS = {
+  US_DATETIME: "MMM D, YYYY h:mm A",
+  IN_DATETIME: "D MMM YYYY, h:mm A",
+  US_DATE: "MMM D, YYYY",
+  IN_DATE: "D MMM YYYY",
+  US_SHORT_DATE: "MMM D, YYYY",
+  IN_SHORT_DATE: "D MMM YYYY",
+  STANDARD_DATE: "D MMM YYYY",
+} as const;

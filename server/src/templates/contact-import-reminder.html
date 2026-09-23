@@ -1,0 +1,765 @@
+<!doctype html>
+<html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<!--
+  ============================================================================
+  Prospectly · Import Contacts Reminder Email (STATIC PREVIEW)
+  ============================================================================
+  Static design preview for the "haven't-imported" re-engagement email,
+  shown on Day 3 of the 1 / 3 / 5 day cadence.
+
+  Visual language mirrors the Getting Started page (Step 1 of 3):
+    - Amethyst -> Rose accent gradient
+    - "Your network could be worth $X+" hero
+    - Source tiles (Google / Microsoft / Apple / CSV)
+    - "Fortress-safe" trust banner
+    - Trustpilot 4.8 social proof
+
+  FULLY MOBILE RESPONSIVE — refined for all screen sizes.
+  ============================================================================
+-->
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <meta name="color-scheme" content="light" />
+    <meta name="supported-color-schemes" content="light" />
+    <title>Your network is sitting on the bench — Prospectly</title>
+    <!--[if gte mso 9]>
+    <xml>
+        <o:OfficeDocumentSettings>
+            <o:AllowPNG/>
+            <o:PixelsPerInch>96</o:PixelsPerInch>
+        </o:OfficeDocumentSettings>
+    </xml>
+    <![endif]-->
+    <!--[if mso]>
+    <style type="text/css">
+        table, td, div, h1, p { font-family: 'Segoe UI', Arial, sans-serif !important; }
+        .container { width: 600px !important; }
+        .cta-btn-link, .cta-btn-link span { color: #FFFFFF !important; }
+    </style>
+    <![endif]-->
+    <style>
+        /* Reset & base */
+        body,
+        table,
+        td,
+        a {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+
+        table,
+        td {
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        img {
+            -ms-interpolation-mode: bicubic;
+            border: 0;
+            outline: none;
+            text-decoration: none;
+            display: block;
+        }
+        .force-light-bg {
+            background-color: #FFFFFF !important;
+        }
+
+        .force-details-bg {
+            background-color: #FBF7FE !important;
+        }
+
+        .details-card {
+            border-radius: 16px !important;
+            -webkit-border-radius: 16px !important;
+            overflow: hidden !important;
+        }
+
+        .force-outer-bg {
+            background-color: #F5F3F8 !important;
+        }
+
+        .force-dark-text {
+            color: #0F172A !important;
+        }
+
+        .force-muted-text {
+            color: #64748B !important;
+        }
+
+        .force-body-text {
+            color: #475569 !important;
+        }
+
+        .force-white-text {
+            color: #FFFFFF !important;
+        }
+
+        .cta-btn-td {
+            background-color: #E30B8B !important;
+        }
+
+        .cta-btn-link,
+        .cta-btn-link span {
+            color: #FFFFFF !important;
+            text-decoration: none !important;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .force-outer-bg {
+                background-color: #F5F3F8 !important;
+            }
+
+            .force-light-bg {
+                background-color: #FFFFFF !important;
+            }
+
+            .force-details-bg {
+                background-color: #FBF7FE !important;
+            }
+
+            .force-dark-text {
+                color: #0F172A !important;
+            }
+
+            .force-muted-text {
+                color: #64748B !important;
+            }
+
+            .force-body-text {
+                color: #475569 !important;
+            }
+
+            .force-white-text {
+                color: #FFFFFF !important;
+            }
+
+            .cta-btn-td {
+                background-color: #E30B8B !important;
+            }
+
+            .cta-btn-link,
+            .cta-btn-link span {
+                color: #FFFFFF !important;
+            }
+        }
+
+        [data-ogsc] .force-outer-bg {
+            background-color: #F5F3F8 !important;
+        }
+
+        [data-ogsb] .force-light-bg {
+            background-color: #FFFFFF !important;
+        }
+
+        [data-ogsb] .force-details-bg {
+            background-color: #FBF7FE !important;
+        }
+
+        [data-ogsc] .force-dark-text {
+            color: #0F172A !important;
+        }
+
+        [data-ogsc] .force-muted-text {
+            color: #64748B !important;
+        }
+
+        [data-ogsc] .force-body-text {
+            color: #475569 !important;
+        }
+
+        [data-ogsc] .cta-btn-td {
+            background-color: #E30B8B !important;
+        }
+
+        [data-ogsc] .cta-btn-link,
+        [data-ogsc] .cta-btn-link span {
+            color: #FFFFFF !important;
+        }
+
+        .source-icon-apple-dark {
+            display: none !important;
+            max-height: 0 !important;
+            overflow: hidden !important;
+            mso-hide: all;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .source-icon-apple-light {
+                display: none !important;
+                max-height: 0 !important;
+                overflow: hidden !important;
+                mso-hide: all;
+            }
+
+            .source-icon-apple-dark {
+                display: block !important;
+                max-height: none !important;
+                overflow: visible !important;
+                mso-hide: none;
+            }
+        }
+
+        [data-ogsc] .source-icon-apple-light {
+            display: none !important;
+            max-height: 0 !important;
+            overflow: hidden !important;
+        }
+
+        [data-ogsc] .source-icon-apple-dark {
+            display: block !important;
+            max-height: none !important;
+            overflow: visible !important;
+        }
+
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            background-color: #F5F3F8;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* RESPONSIVE BREAKPOINT: max-width 600px */
+        @media only screen and (max-width: 600px) {
+            .container {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+
+            .px-pad {
+                padding-left: 24px !important;
+                padding-right: 24px !important;
+            }
+
+            .px-pad-sm {
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+            }
+
+            .brand-row td {
+                display: block !important;
+                width: 100% !important;
+                text-align: center !important;
+            }
+
+            .brand-row td img {
+                margin: 0 auto !important;
+            }
+
+            .hero-title {
+                font-size: 28px !important;
+                line-height: 1.25 !important;
+            }
+
+            .hero-amount {
+                font-size: 34px !important;
+                display: inline-block !important;
+            }
+
+            .source-grid .stack-column {
+                display: block !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+                padding-top: 0 !important;
+                padding-bottom: 10px !important;
+            }
+
+            .source-grid .stack-column-last-row {
+                padding-bottom: 0 !important;
+            }
+
+            .stat-cell {
+                display: block !important;
+                width: 100% !important;
+                border-right: 0 !important;
+                border-bottom: 1px solid #EAE3F0 !important;
+                padding: 12px 8px !important;
+                text-align: center !important;
+            }
+
+            .stat-cell-last {
+                border-bottom: 0 !important;
+            }
+
+            .fortress-grid td.fortress-cell {
+                display: block !important;
+                width: 100% !important;
+                border-right: 0 !important;
+                border-bottom: 1px solid #E2E8F0 !important;
+                padding: 12px 16px !important;
+            }
+
+            .fortress-grid td.fortress-cell-last {
+                border-bottom: 0 !important;
+            }
+
+            .cta-button {
+                width: 100% !important;
+                text-align: center !important;
+                padding: 14px 20px !important;
+                font-size: 16px !important;
+                box-sizing: border-box !important;
+            }
+
+            .value-list td {
+                display: block !important;
+                width: 100% !important;
+            }
+
+            .estimator-card-inner {
+                padding: 16px !important;
+            }
+
+            .earn-number {
+                font-size: 32px !important;
+            }
+
+            @media only screen and (max-width: 480px) {
+                .px-pad {
+                    padding-left: 16px !important;
+                    padding-right: 16px !important;
+                }
+
+                .hero-title {
+                    font-size: 26px !important;
+                }
+
+                .hero-amount {
+                    font-size: 30px !important;
+                }
+            }
+        }
+    </style>
+</head>
+
+<body class="force-outer-bg" style="margin:0; padding:0; background-color:#F5F3F8; font-family:'Inter','Segoe UI',Arial,sans-serif; color:#0F172A;">
+
+    <!-- Hidden preheader (shown as preview text in inbox) -->
+    <div style="display:none; max-height:0; overflow:hidden; mso-hide:all; visibility:hidden; opacity:0; color:transparent; height:0; width:0; font-size:1px; line-height:1px;">
+        Import your contacts in 60 seconds and start earning from warm introductions. Most members finish in under a minute. Don't miss out on payouts and connector credits. Get started today.
+    </div>
+
+    <!-- Outer wrapper -->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="force-outer-bg" bgcolor="#F5F3F8" style="background-color:#F5F3F8;">
+        <tr>
+            <td align="center" style="padding:24px 16px 40px 16px;">
+
+                <!-- ============================================================
+             EMAIL CARD
+             ============================================================ -->
+                <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" class="container force-light-bg" bgcolor="#FFFFFF" style="width:600px; max-width:600px; background-color:#FFFFFF; border-radius:24px; overflow:hidden; box-shadow:0 12px 40px rgba(15,23,42,0.08);">
+
+                    <!-- Gradient accent bar -->
+                    <tr>
+                        <td style="background-color:#E30B8B; background:linear-gradient(135deg,#A892CF 0%,#E30B8B 100%); height:6px; line-height:6px; font-size:0;">&nbsp;</td>
+                    </tr>
+
+                    <!-- Brand header -->
+                    <tr>
+                        <td class="px-pad" style="padding:28px 48px 0 48px;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="brand-row">
+                                <tr>
+                                    <td valign="middle" align="center" style="text-align:center;">
+                                        <a href="{{url}}" style="text-decoration:none; display:inline-block; line-height:0;">
+                                            <img src="https://prospectly.com/prospectly-logo.png" alt="Prospectly" width="254" height="44" style="display:block; width:254px; height:44px; max-width:100%; border:0; outline:none; margin:0 auto;" />
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Hero + message -->
+                    <tr>
+                        <td class="px-pad" style="padding:28px 48px 8px 48px;">
+                            <!-- Step badge -->
+                            <p style="margin:0 0 14px 0; font-size:11px; font-weight:800; letter-spacing:1.2px; text-transform:uppercase; color:#E30B8B;">
+                                <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background-color:#E30B8B; vertical-align:middle; margin-right:8px;"></span>
+                                Step 1 of 3 · Import Contacts
+                            </p>
+
+                            <!-- Headline -->
+                            <h1 class="hero-title" style="margin:0 0 12px 0; font-size:34px; line-height:1.2; font-weight:800; letter-spacing:-0.6px; color:#0F172A;">
+                                {{firstName}}, your network is still
+                                <br />
+                                <span class="hero-amount" style="
+                  font-size:42px;
+                  font-weight:800;
+                  background:linear-gradient(135deg,#A892CF 0%,#E30B8B 100%);
+                  -webkit-background-clip:text;
+                  background-clip:text;
+                  color:#E30B8B;
+                  -webkit-text-fill-color:transparent;
+                  display:inline-block;">
+                                    worth $25,000+
+                                </span>
+                            </h1>
+
+                            <!-- Subhead -->
+                            <p style="margin:0 0 24px 0; font-size:15px; line-height:1.6; color:#475569;">
+                                We noticed you haven't imported contacts yet. The longer your network sits dormant, the more warm intros — and payouts — you're missing out on. Most people finish in under <strong style="color:#0F172A;">60 seconds</strong>.
+                            </p>
+
+                            <!-- Value props list (clean responsive) -->
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:12px;">
+                                <tr>
+                                    <td style="padding:6px 0;">
+                                        <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                                            <tr>
+                                                <td valign="middle" width="36" style="padding-right:12px;">
+                                                    <div style="width:32px; height:32px; border-radius:10px; background-color:rgba(227,11,139,0.10); color:#E30B8B; font-size:15px; font-weight:800; line-height:32px; text-align:center;">$</div>
+                                                </td>
+                                                <td valign="middle" style="font-size:14px; font-weight:600; color:#0F172A;">
+                                                    Earn <strong>$25–$500+</strong> per warm introduction
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:6px 0;">
+                                        <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                                            <tr>
+                                                <td valign="middle" width="36" style="padding-right:12px;">
+                                                    <div style="width:32px; height:32px; border-radius:10px; background-color:rgba(168,146,207,0.18); color:#7B5FB0; font-size:15px; font-weight:800; line-height:32px; text-align:center;">~</div>
+                                                </td>
+                                                <td valign="middle" style="font-size:14px; font-weight:600; color:#0F172A;">
+                                                    AI-matched intro paths from <strong>your</strong> network
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:6px 0;">
+                                        <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                                            <tr>
+                                                <td valign="middle" width="36" style="padding-right:12px;">
+                                                    <div style="width:32px; height:32px; border-radius:10px; background-color:rgba(39,171,221,0.12); color:#1AA0CE; font-size:15px; font-weight:800; line-height:32px; text-align:center;">+</div>
+                                                </td>
+                                                <td valign="middle" style="font-size:14px; font-weight:600; color:#0F172A;">
+                                                    Get up to <strong>$60 in Connector Credits</strong> free
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Earning potential estimator (fully responsive) -->
+                    <tr>
+                        <td class="px-pad" style="padding:24px 48px 8px 48px;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="force-details-bg details-card" bgcolor="#FBF7FE" style="border-collapse:separate; border-spacing:0; background-color:#FBF7FE; background:linear-gradient(180deg,#FBF7FE 0%,#FFFFFF 100%); border:1px solid #EAE3F0; border-radius:16px;">
+                                
+                                <tr>
+                                    <td class="estimator-card-inner" style="padding:20px 22px 12px 22px;">
+                                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                            <tr>
+                                                <td valign="middle" width="40" style="padding-right:12px;">
+                                                    <div style="width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg,#A892CF,#E30B8B); color:#FFFFFF; font-size:20px; font-weight:800; line-height:40px; text-align:center;">$</div>
+                                                </td>
+                                                <td valign="middle">
+                                                    <div style="font-size:16px; font-weight:800; color:#0F172A;">See what your network is worth</div>
+                                                    <div style="font-size:12px; color:#64748B;">Based on ~500 connections</div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center" style="padding:8px 22px 6px 22px;">
+                                        <p style="margin:0 0 4px 0; font-size:11px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:#64748B;">Your earning potential</p>
+                                        <p style="margin:0;">
+                                            <span class="earn-number" style="font-size:38px; font-weight:800; letter-spacing:-1px; background:linear-gradient(135deg,#A892CF 0%,#E30B8B 100%); -webkit-background-clip:text; background-clip:text; color:#E30B8B; -webkit-text-fill-color:transparent;">$25,000</span>
+                                            <span style="font-size:14px; font-weight:700; color:#64748B;">/year</span>
+                                        </p>
+                                        <p style="margin:4px 0 0 0; font-size:12px; color:#64748B;">from warm introductions alone</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:12px 22px 22px 22px;">
+                                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #EAD8EE; background-color:#FAF1FB; border-radius:14px;">
+                                            <tr>
+                                                <td class="stat-cell" align="center" style="width:33.33%; padding:12px 4px; border-right:1px solid #EAD8EE;">
+                                                    <div style="font-size:15px; font-weight:800; color:#0F172A;">~500</div>
+                                                    <div style="margin-top:4px; font-size:10px; color:#64748B; text-transform:uppercase;">connections</div>
+                                                </td>
+                                                <td class="stat-cell" align="center" style="width:33.33%; padding:12px 4px; border-right:1px solid #EAD8EE;">
+                                                    <div style="font-size:15px; font-weight:800; color:#0F172A;">$50</div>
+                                                    <div style="margin-top:4px; font-size:10px; color:#64748B; text-transform:uppercase;">avg payout</div>
+                                                </td>
+                                                <td class="stat-cell stat-cell-last" align="center" style="width:33.33%; padding:12px 4px;">
+                                                    <div style="font-size:15px; font-weight:800; color:#0F172A;">500</div>
+                                                    <div style="margin-top:4px; font-size:10px; color:#64748B; text-transform:uppercase;">matchable</div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- PRIMARY CTA (fully responsive) -->
+                    <tr>
+                        <td class="px-pad" align="center" style="padding:22px 48px 12px 48px;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td align="center">
+                                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="border-collapse:separate; border-spacing:0;">
+                                            <tr>
+                                                <td align="center" class="cta-btn-td" bgcolor="#E30B8B" style="border-radius:60px; -webkit-border-radius:60px; background-color:#E30B8B; background:linear-gradient(135deg,#A892CF 0%,#E30B8B 100%); mso-padding-alt:0;">
+                                                    <!--[if mso]>
+                                                    <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{url}}/getting-started?step=1" style="height:50px;v-text-anchor:middle;width:260px;" arcsize="50%" stroke="f" fillcolor="#E30B8B">
+                                                        <v:fill type="gradient" color="#A892CF" color2="#E30B8B" angle="135" />
+                                                        <w:anchorlock/>
+                                                        <center style="color:#ffffff;font-family:'Segoe UI',Arial,sans-serif;font-size:16px;font-weight:bold;mso-line-height-rule:exactly;">
+                                                            Import contacts &amp; start earning &#8594;
+                                                        </center>
+                                                    </v:roundrect>
+                                                    <![endif]-->
+                                                    <a href="{{url}}/getting-started?step=1" class="cta-button cta-btn-link" target="_blank" style="mso-hide:all; display:inline-block; padding:14px 32px; font-size:16px; font-family:'Segoe UI',Arial,sans-serif; font-weight:700; line-height:1.2; color:#ffffff; text-decoration:none; background-color:transparent;">
+                                                        <span style="color:#ffffff; text-decoration:none;">Import contacts &amp; start earning &#8594;</span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <!-- CTA Fallback -->
+                                        <div style="text-align:center; margin-top:22px;">
+                                            <p style="margin:0 0 8px 0; font-size:13px; line-height:1.6; color:#64748B; text-align:center;">
+                                                If the button doesn't work, copy and paste this link into your browser:
+                                            </p>
+                                            <a href="{{url}}/getting-started?step=1" style="font-size:13px; line-height:1.8; color:#E30B8B; word-break:break-all;">
+                                                {{url}}/getting-started?step=1
+                                            </a>
+                                        </div>
+                                        <p style="margin:12px 0 0 0; font-size:12px; color:#64748B;">
+                                            Takes 60 seconds · <strong style="color:#E30B8B;">+$60 in Connector Credits</strong>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Source tiles (Google / Microsoft / Apple / CSV) - fully responsive grid -->
+                    <tr>
+                        <td class="px-pad" style="padding:20px 48px 8px 48px;">
+                            <p style="margin:0 0 4px 0; font-size:14px; font-weight:800; color:#0F172A;">Connect a source — pick whatever you use</p>
+                            <p style="margin:0 0 18px 0; font-size:12px; color:#64748B;">One-click sync. Your contacts stay private.</p>
+
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="source-grid">
+                                <!-- Row 1: Google + Microsoft -->
+                                <tr>
+                                    <td class="stack-column" valign="top" width="50%" style="width:50%; padding:0 8px 12px 0;">
+                                        <a href="{{url}}/getting-started?step=1" style="text-decoration:none; display:block;">
+                                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="force-light-bg" bgcolor="#FFFFFF" style="border:1.5px solid #EAE3F0; background-color:#FFFFFF; border-radius:16px;">
+                                                <tr>
+                                                    <td style="padding:12px 14px;">
+                                                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                                            <tr>
+                                                                <td width="48" align="center" valign="middle" style="width:48px; vertical-align:middle;">
+                                                                    <img src="{{sourceIconGoogleSrc}}" width="40" height="40" alt="Google" style="display:block; width:40px; height:40px; border:0; outline:none; margin:0 auto; border-radius:12px;" />
+                                                                </td>
+                                                                <td valign="middle" style="vertical-align:middle; padding-left:12px;">
+                                                                    <div class="force-dark-text" style="font-size:14px; font-weight:800; color:#0F172A;">Google Contacts</div>
+                                                                    <div class="force-muted-text" style="font-size:11px; color:#64748B;">1 min sync</div>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </a>
+                                    </td>
+                                    <td class="stack-column" valign="top" width="50%" style="width:50%; padding:0 0 12px 8px;">
+                                        <a href="{{url}}/getting-started?step=1" style="text-decoration:none; display:block;">
+                                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="force-light-bg" bgcolor="#FFFFFF" style="border:1.5px solid #EAE3F0; background-color:#FFFFFF; border-radius:16px;">
+                                                <tr>
+                                                    <td style="padding:12px 14px;">
+                                                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                                            <tr>
+                                                                <td width="48" align="center" valign="middle" style="width:48px; vertical-align:middle;">
+                                                                    <img src="{{sourceIconMicrosoftSrc}}" width="40" height="40" alt="Microsoft" style="display:block; width:40px; height:40px; border:0; outline:none; margin:0 auto; border-radius:12px;" />
+                                                                </td>
+                                                                <td valign="middle" style="vertical-align:middle; padding-left:12px;">
+                                                                    <div class="force-dark-text" style="font-size:14px; font-weight:800; color:#0F172A;">Microsoft Outlook</div>
+                                                                    <div class="force-muted-text" style="font-size:11px; color:#64748B;">1 min connect</div>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <!-- Row 2: Apple + CSV -->
+                                <tr>
+                                    <td class="stack-column" valign="top" width="50%" style="width:50%; padding:6px 8px 6px 0;">
+                                        <a href="{{url}}/getting-started?step=1" style="text-decoration:none; display:block;">
+                                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="force-light-bg" bgcolor="#FFFFFF" style="border:1.5px solid #EAE3F0; background-color:#FFFFFF; border-radius:16px;">
+                                                <tr>
+                                                    <td style="padding:12px 14px;">
+                                                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                                            <tr>
+                                                                <td width="48" align="center" valign="middle" style="width:48px; vertical-align:middle;">
+                                                                    <img src="{{sourceIconAppleSrc}}" width="40" height="40" alt="Apple" class="source-icon-apple-light" style="display:block; width:40px; height:40px; border:0; outline:none; margin:0 auto; border-radius:12px;" />
+                                                                    <img src="{{sourceIconAppleDarkSrc}}" width="40" height="40" alt="Apple" class="source-icon-apple-dark" style="display:none; width:40px; height:40px; border:0; outline:none; margin:0 auto; border-radius:12px;" />
+                                                                </td>
+                                                                <td valign="middle" style="vertical-align:middle; padding-left:12px;">
+                                                                    <div class="force-dark-text" style="font-size:14px; font-weight:800; color:#0F172A;">Apple iCloud</div>
+                                                                    <div class="force-muted-text" style="font-size:11px; color:#64748B;">Easy connect</div>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </a>
+                                    </td>
+                                    <td class="stack-column stack-column-last-row" valign="top" width="50%" style="width:50%; padding:6px 0 0 8px;">
+                                        <a href="{{url}}/getting-started?step=1" style="text-decoration:none; display:block;">
+                                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="force-details-bg" bgcolor="#FBF7FE" style="border:1.5px dashed #C9BFD3; background-color:#FBF7FE; border-radius:16px;">
+                                                <tr>
+                                                    <td style="padding:12px 14px;">
+                                                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                                            <tr>
+                                                                <td width="48" align="center" valign="middle" style="width:48px; vertical-align:middle;">
+                                                                    <img src="{{sourceIconCsvSrc}}" width="40" height="40" alt="Upload" style="display:block; width:40px; height:40px; border:0; outline:none; margin:0 auto; border-radius:12px;" />
+                                                                </td>
+                                                                <td valign="middle" style="vertical-align:middle; padding-left:12px;">
+                                                                    <div class="force-dark-text" style="font-size:14px; font-weight:800; color:#0F172A;">Upload CSV / vCard</div>
+                                                                    <div class="force-muted-text" style="font-size:11px; color:#64748B;">Manual import</div>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Trust banner (fortress-safe) fully responsive -->
+                    <tr>
+                        <td class="px-pad" style="padding:20px 48px 12px 48px;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid rgba(14,165,233,0.22); background-color:#FFFFFF; border-radius:20px;">
+                                <tr>
+                                    <td style="padding:16px 18px; border-bottom:1px solid #E2E8F0;">
+                                        <table role="presentation" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td valign="middle" width="30" style="padding-right:12px;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0EA5E9" stroke-width="2.2">
+                                                        <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.5 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path>
+                                                        <path d="m9 12 2 2 4-4"></path>
+                                                    </svg>
+                                                </td>
+                                                <td valign="middle">
+                                                    <div style="font-size:15px; font-weight:800; color:#0F172A;">Your contacts are fortress-safe</div>
+                                                    <div style="font-size:11px; color:#64748B;">End-to-end encrypted · You stay in control</div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:0;">
+                                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="fortress-grid">
+                                            <tr>
+                                                <td class="fortress-cell" valign="middle" style="padding:14px 18px; border-right:1px solid #E2E8F0; border-bottom:1px solid #E2E8F0;">
+                                                    <table role="presentation">
+                                                        <tr>
+                                                            <td valign="middle" width="24">
+                                                                <div style="width:20px;height:20px;background:rgba(14,165,233,0.12);border-radius:50%;text-align:center;line-height:20px;color:#0284C7;">✓</div>
+                                                            </td>
+                                                            <td style="font-size:12px;padding-left:8px;"><strong style="color:#0F172A;">Zero-knowledge</strong> — only you see contacts</td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td class="fortress-cell" valign="middle" style="padding:14px 18px; border-bottom:1px solid #E2E8F0;">
+                                                    <table role="presentation">
+                                                        <tr>
+                                                            <td valign="middle" width="24">
+                                                                <div style="width:20px;height:20px;background:rgba(14,165,233,0.12);border-radius:50%;text-align:center;line-height:20px;color:#0284C7;">✓</div>
+                                                            </td>
+                                                            <td style="font-size:12px;padding-left:8px;"><strong style="color:#0F172A;">Never emailed</strong> — inboxes untouched</td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fortress-cell" valign="middle" style="padding:14px 18px; border-right:1px solid #E2E8F0;">
+                                                    <table role="presentation">
+                                                        <tr>
+                                                            <td valign="middle" width="24">
+                                                                <div style="width:20px;height:20px;background:rgba(14,165,233,0.12);border-radius:50%;text-align:center;line-height:20px;color:#0284C7;">✓</div>
+                                                            </td>
+                                                            <td style="font-size:12px;padding-left:8px;"><strong style="color:#0F172A;">You approve</strong> every intro</td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td class="fortress-cell fortress-cell-last" valign="middle" style="padding:14px 18px;">
+                                                    <table role="presentation">
+                                                        <tr>
+                                                            <td valign="middle" width="24">
+                                                                <div style="width:20px;height:20px;background:rgba(14,165,233,0.12);border-radius:50%;text-align:center;line-height:20px;color:#0284C7;">✓</div>
+                                                            </td>
+                                                            <td style="font-size:12px;padding-left:8px;"><strong style="color:#0F172A;">Encrypted</strong> end-to-end</td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Secondary CTA + support -->
+                    <tr>
+                        <td class="px-pad" align="center" style="padding:12px 48px 40px 48px;">
+                            <p style="margin:0 0 12px 0; font-size:13px; color:#64748B;">Need a hand? Reply to this email — a real human reads every message.</p>
+                            <a href="{{url}}/getting-started?step=1" style="font-size:14px; font-weight:700; color:#E30B8B; text-decoration:none; border-bottom:1px solid rgba(227,11,139,0.3);">Open Getting Started →</a>
+                        </td>
+                    </tr>
+                </table>
+                <!-- END EMAIL CARD -->
+
+                <!-- FOOTER -->
+                <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" class="container" style="width:600px; max-width:600px;">
+                    <tr>
+                        <td align="center" style="padding:24px 20px 16px 20px; font-size:12px; line-height:1.6; color:#94A3B8;">
+                            <p style="margin:0 0 8px 0;">You're receiving this because you signed up for Prospectly 3 days ago and haven't imported contacts yet.</p>
+                            <p style="margin:0 0 8px 0;">Already imported? Ignore this — we'll catch the change on our next sync.</p>
+                            <p style="margin:10px 0 0 0;">
+                                <a href="{{url}}/profile/user-profile" style="color:#E30B8B; font-weight:600;">Email preferences</a> &nbsp;·&nbsp;
+                                <a href="{{url}}" style="color:#E30B8B; font-weight:600;">Visit Prospectly</a>
+                            </p>
+                            <p style="margin:14px 0 0 0; font-size:11px;">© {{currentYear}} Prospectly. All rights reserved.</p>
+                        </td>
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

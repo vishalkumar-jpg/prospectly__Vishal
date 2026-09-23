@@ -1,0 +1,2 @@
+CREATE INDEX "idx_contact_relationships_user_id" ON "prospectly"."contact_relationships" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "idx_contact_enrichments_metrics" ON "prospectly"."contact_enrichments" USING btree ("enriched_by","enrichment_status","enrichment_source");

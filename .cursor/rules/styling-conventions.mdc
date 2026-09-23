@@ -1,0 +1,348 @@
+---
+description: TailwindCSS styling conventions, theme colors, and component styling patterns
+globs: client/src/**/*.tsx,client/src/index.css
+---
+
+# Styling Conventions
+
+## TailwindCSS Setup
+
+The project uses TailwindCSS v3 with a custom theme configuration.
+
+## cn() Utility
+
+Location: `client/src/lib/utils.ts`
+
+Always use `cn()` for className merging:
+
+```typescript
+import { cn } from "@/lib/utils";
+
+// Basic usage
+<div className={cn("base-class", className)} />
+
+// Conditional classes
+<div className={cn(
+  "flex items-center gap-2",
+  isActive && "bg-primary text-primary-foreground",
+  isDisabled && "opacity-50 pointer-events-none",
+  className
+)} />
+
+// With error states
+<input className={cn(
+  "flex h-10 w-full rounded-md border px-3 py-2",
+  error && "border-destructive focus-visible:ring-destructive",
+  className
+)} />
+```
+
+## Theme Colors
+
+The project uses CSS variables for theming (light/dark mode support):
+
+### Semantic Colors
+
+```typescript
+// Primary colors
+"bg-primary"              // Primary background
+"text-primary"            // Primary text
+"text-primary-foreground" // Text on primary background
+"border-primary"          // Primary border
+
+// Secondary
+"bg-secondary"
+"text-secondary"
+"text-secondary-foreground"
+
+// Destructive (errors, delete actions)
+"bg-destructive"
+"text-destructive"
+"text-destructive-foreground"
+"border-destructive"
+
+// Muted (subtle backgrounds, disabled states)
+"bg-muted"
+"text-muted-foreground"
+
+// Accent
+"bg-accent"
+"text-accent-foreground"
+
+// Card backgrounds
+"bg-card"
+"text-card-foreground"
+
+// Background and foreground
+"bg-background"
+"text-foreground"
+
+// Borders
+"border-border"
+"border-input"
+```
+
+### Usage Examples
+
+```typescript
+// Button variants
+<button className="bg-primary text-primary-foreground">Primary</button>
+<button className="bg-destructive text-destructive-foreground">Delete</button>
+<button className="bg-secondary text-secondary-foreground">Secondary</button>
+
+// Cards
+<div className="bg-card text-card-foreground border border-border rounded-lg p-4">
+  Card content
+</div>
+
+// Subtle backgrounds
+<div className="bg-muted text-muted-foreground p-2 rounded">
+  Muted section
+</div>
+
+// Error states
+<p className="text-destructive text-sm">Error message</p>
+<input className="border-destructive" />
+```
+
+## Common Patterns
+
+### Container and Layout
+
+```typescript
+// Page container
+<div className="container mx-auto px-4 py-6">
+
+// Flex layouts
+<div className="flex items-center justify-between gap-4">
+<div className="flex flex-col gap-2">
+
+// Grid layouts
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+// Full height layouts
+<div className="flex flex-col min-h-screen">
+  <header className="shrink-0">Header</header>
+  <main className="flex-1 overflow-auto">Content</main>
+  <footer className="shrink-0">Footer</footer>
+</div>
+```
+
+### Spacing
+
+```typescript
+// Consistent spacing scale
+"p-2"    // 8px
+"p-4"    // 16px
+"p-6"    // 24px
+
+"gap-1"  // 4px
+"gap-2"  // 8px
+"gap-4"  // 16px
+
+"space-y-2"  // Vertical spacing between children
+"space-x-4"  // Horizontal spacing between children
+```
+
+### Typography
+
+```typescript
+// Headings
+<h1 className="text-2xl font-bold tracking-tight">Page Title</h1>
+<h2 className="text-xl font-semibold">Section Title</h2>
+<h3 className="text-lg font-medium">Subsection</h3>
+
+// Body text
+<p className="text-sm text-muted-foreground">Description text</p>
+
+// Labels
+<label className="text-sm font-medium">Field Label</label>
+
+// Small text
+<span className="text-xs text-muted-foreground">Helper text</span>
+```
+
+### Interactive States
+
+```typescript
+// Hover effects
+"hover:bg-muted/50"
+"hover:bg-accent"
+"hover:text-accent-foreground"
+"hover:opacity-80"
+
+// Focus states (for accessibility)
+"focus-visible:outline-none"
+"focus-visible:ring-2"
+"focus-visible:ring-ring"
+"focus-visible:ring-offset-2"
+
+// Disabled states
+"disabled:pointer-events-none"
+"disabled:opacity-50"
+"disabled:cursor-not-allowed"
+
+// Transitions
+"transition-colors"
+"transition-all"
+"duration-200"
+```
+
+### Borders and Shadows
+
+```typescript
+// Borders
+"border"
+"border-border"
+"border-input"
+"rounded-md"
+"rounded-lg"
+"rounded-xl"
+"rounded-full"
+
+// Shadows
+"shadow-sm"
+"shadow"
+"shadow-md"
+"shadow-lg"
+
+// Border on specific sides
+"border-b"
+"border-t"
+"border-l"
+"border-r"
+```
+
+## Component Styling Patterns
+
+### Card Component
+
+```typescript
+<div className="bg-card text-card-foreground border border-border rounded-lg shadow-sm">
+  <div className="p-6">
+    <h3 className="text-lg font-semibold">Card Title</h3>
+    <p className="text-sm text-muted-foreground mt-1">Card description</p>
+  </div>
+  <div className="p-6 pt-0">
+    Content
+  </div>
+</div>
+```
+
+### Form Field
+
+```typescript
+<div className="space-y-2">
+  <label className="text-sm font-medium">
+    Field Label
+    <span className="text-destructive">*</span>
+  </label>
+  <input className={cn(
+    "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2",
+    "text-sm placeholder:text-muted-foreground",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+    "disabled:cursor-not-allowed disabled:opacity-50",
+    error && "border-destructive"
+  )} />
+  {error && <p className="text-sm text-destructive">{error}</p>}
+</div>
+```
+
+### Button Styles
+
+```typescript
+// Primary button
+"inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+
+// Ghost button
+"hover:bg-muted hover:text-muted-foreground"
+
+// Icon button
+"h-9 w-9 p-0"
+```
+
+### Table Styles
+
+```typescript
+<table className="w-full caption-bottom text-sm">
+  <thead className="[&_tr]:border-b">
+    <tr className="border-b">
+      <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+        Header
+      </th>
+    </tr>
+  </thead>
+  <tbody className="[&_tr:last-child]:border-0">
+    <tr className="border-b transition-colors hover:bg-muted/50">
+      <td className="p-4 align-middle">Cell</td>
+    </tr>
+  </tbody>
+</table>
+```
+
+## Loading States
+
+```typescript
+// Spinner
+<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+
+// Skeleton
+<div className="animate-pulse bg-muted rounded h-4 w-full" />
+
+// Full page loading
+<div className="flex items-center justify-center min-h-screen">
+  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+</div>
+```
+
+## Responsive Design
+
+```typescript
+// Breakpoints
+"sm:"   // 640px
+"md:"   // 768px
+"lg:"   // 1024px
+"xl:"   // 1280px
+"2xl:"  // 1536px
+
+// Examples
+<div className="flex flex-col md:flex-row">
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+<span className="hidden md:inline-block">
+<div className="p-4 md:p-6 lg:p-8">
+```
+
+## Dark Mode
+
+The project uses `next-themes` for dark mode. Classes automatically apply:
+
+```typescript
+// Theme provider in App.tsx
+<ThemeProvider defaultTheme="system">
+
+// Toggle theme
+import { useTheme } from "@/components/ThemeProvider";
+const { theme, toggleTheme } = useTheme();
+
+// CSS variables automatically switch between light/dark values
+// No need for dark: prefix in most cases
+```
+
+## Avoid These Patterns
+
+```typescript
+// DON'T use inline styles
+<div style={{ padding: 16 }}>  // Bad
+
+// DO use Tailwind classes
+<div className="p-4">  // Good
+
+// DON'T use CSS modules or styled-components
+// DO use Tailwind with cn() utility
+
+// DON'T hardcode colors
+<div className="bg-[#ff0000]">  // Bad
+
+// DO use theme colors
+<div className="bg-destructive">  // Good
+```

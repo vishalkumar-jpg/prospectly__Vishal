@@ -1,0 +1,80 @@
+---
+description: UI components, Shadcn/Radix patterns, and layout components
+globs: client/src/components/**/*
+---
+
+# UI Components
+
+## Shadcn UI Components
+
+Location: `client/src/components/ui/`
+
+The project uses Shadcn UI (Radix UI + Tailwind CSS) for core components.
+
+### Core Components Usage
+
+#### 1. Button
+
+```typescript
+import { Button } from "@/components/ui/button";
+
+<Button variant="default">Primary</Button>
+<Button variant="outline">Secondary</Button>
+<Button variant="ghost">Subtle</Button>
+<Button variant="destructive">Delete</Button>
+```
+
+#### 2. Dialog (Modal)
+
+```typescript
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+<Dialog>
+  <DialogTrigger asChild>
+    <Button>Open</Button>
+  </DialogTrigger>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Title</DialogTitle>
+    </DialogHeader>
+    {/* Content */}
+  </DialogContent>
+</Dialog>
+```
+
+#### 3. Form Components
+
+Used with React Hook Form. See `form-handling.mdc` for full patterns.
+
+```typescript
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+```
+
+## Layout Components
+
+### DashboardLayout
+
+Location: `client/src/pages/DashboardLayout.tsx` (Note: In this project, it's often a page wrapper).
+
+Used as a persistent layout for all dashboard routes.
+
+## Best Practices
+
+1. **Atomic Components**: Use `components/ui` for primitive components.
+2. **Domain Components**: Place feature-specific components in `components/{feature-name}/` (e.g., `components/prospect-hub/`).
+3. **Consistency**: Always use the provided UI components instead of raw HTML elements to ensure theme support and accessibility.
+4. **Accessibility**: Radix-based components handle most A11Y concerns, but always ensure proper labels and roles when building custom components.
+5. **cn() Utility**: Always use the `cn()` utility for merging classes.
+
+```typescript
+import { cn } from "@/lib/utils";
+
+<div className={cn("base-styles", isSpecial && "special-styles")} />
+```
+

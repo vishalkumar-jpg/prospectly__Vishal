@@ -1,0 +1,1 @@
+ALTER TABLE "prospectly"."recruitment_jobs" ADD COLUMN "closed_reason" varchar(500);

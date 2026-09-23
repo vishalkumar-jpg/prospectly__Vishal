@@ -1,0 +1,1 @@
+ALTER TABLE "prospectly"."recruitment_job_prices" ADD COLUMN "salary_range_notes" varchar(255);

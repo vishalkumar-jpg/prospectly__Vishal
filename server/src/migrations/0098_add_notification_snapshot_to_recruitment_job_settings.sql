@@ -1,0 +1,1 @@
+ALTER TABLE "prospectly"."recruitment_job_settings" ADD COLUMN "notification_snapshot" jsonb;

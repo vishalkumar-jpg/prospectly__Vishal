@@ -1,0 +1,83 @@
+version: "3.9"
+
+services:
+
+  # ==========================================================
+  # BACKEND API
+  # ==========================================================
+
+  prospectly:
+    container_name: prospectly-dev
+    image: ghcr.io/vishalkumar-jpg/prospectly-server:latest
+    pull_policy: always
+    tty: true
+    restart: always
+
+    env_file:
+      - .env
+
+    environment:
+      - NO_COLOR=true
+
+    ports:
+      - "127.0.0.1:5001:5001"
+
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "bun",
+          "-e",
+          "fetch('http://localhost:5001/api/health').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))",
+        ]
+      interval: 1800s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+
+  # ==========================================================
+  # BACKEND WORKER
+  # ==========================================================
+
+  prospectly-worker:
+    container_name: prospectly-worker-dev
+    image: ghcr.io/vishalkumar-jpg/prospectly-server:latest
+    pull_policy: always
+    tty: true
+    restart: always
+
+    depends_on:
+      prospectly:
+        condition: service_healthy
+
+    command: ["node", "dist/src/worker.js"]
+
+    env_file:
+      - .env
+
+    environment:
+      - NO_COLOR=true
+
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "bun",
+          "-e",
+          "fetch('http://localhost:5002/worker/health').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))",
+        ]
+      interval: 1800s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+
+# ============================================================
+# NETWORK
+# ============================================================
+
+networks:
+  default:
+    external: true
+    name: prospectly-dev

@@ -1,0 +1,55 @@
+export const APOLLO_MAX_PAGES = 5;
+
+// Max extra Apollo pages to try when dedup filters all results on a page
+export const MAX_APOLLO_DEDUP_RETRIES = 3;
+
+export const COMPANY_STOPWORDS = new Set([
+  "llc",
+  "inc",
+  "inc.",
+  "corp",
+  "corp.",
+  "ltd",
+  "ltd.",
+  "co",
+  "co.",
+  "gmbh",
+  "pvt",
+  "plc",
+  "limited",
+  "company",
+  "and",
+  "the",
+  "of",
+  "&",
+]);
+
+export const TITLE_STOPWORDS = new Set([
+  "sr",
+  "sr.",
+  "jr",
+  "jr.",
+  "lead",
+  "senior",
+  "junior",
+  "chief",
+  "head",
+  "principal",
+  "staff",
+  "associate",
+  "assistant",
+  "intern",
+  "i",
+  "ii",
+  "iii",
+  "iv",
+  "v",
+  "vi",
+  "the",
+  "of",
+  "and",
+  "at",
+  "in",
+  "for",
+  "&",
+]);

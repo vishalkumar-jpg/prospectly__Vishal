@@ -1,0 +1,3 @@
+ALTER TABLE "prospectly"."contact_provider_tokens" DROP CONSTRAINT IF EXISTS "uq_contact_provider_tokens_user_provider";--> statement-breakpoint
+ALTER TABLE "prospectly"."contact_provider_tokens" ADD COLUMN IF NOT EXISTS "is_primary" boolean DEFAULT true NOT NULL;--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "idx_contact_provider_tokens_user_provider_email" ON "prospectly"."contact_provider_tokens" USING btree ("user_id","provider","email");

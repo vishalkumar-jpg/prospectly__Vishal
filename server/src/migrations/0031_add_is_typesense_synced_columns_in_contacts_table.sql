@@ -1,0 +1,2 @@
+ALTER TABLE "prospectly"."contacts" ADD COLUMN "is_typesense_synced" boolean DEFAULT false NOT NULL;--> statement-breakpoint
+CREATE INDEX "idx_contacts_typesense_unsynced" ON "prospectly"."contacts" USING btree ("id") WHERE is_typesense_synced = false AND deleted_at IS NULL;

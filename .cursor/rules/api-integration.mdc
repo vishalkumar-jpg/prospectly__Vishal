@@ -1,0 +1,108 @@
+---
+description: API integration patterns, manual service layer, TanStack Query, and Axios configuration
+globs: client/src/lib/api/**/*,client/src/hooks/**/*
+---
+
+# API Integration
+
+## Manual API Service Layer
+
+Location: `client/src/lib/api/`
+
+Instead of auto-generating an SDK, this project uses a manual service layer defined in `client/src/lib/api/`.
+
+### Directory Structure
+
+```
+lib/api/
+├── auth.ts              # Authentication endpoints
+├── contacts.ts          # Contact management
+├── introductions.ts     # Introduction logic
+├── linkedin.ts          # LinkedIn integration
+├── payments.ts          # Stripe/Payment logic
+├── core.ts              # Global handlers and core logic
+└── index.ts             # Central API export
+```
+
+### Pattern Example (introductions.ts)
+
+```typescript
+import { request } from './core';
+
+export const introductionsApi = {
+  getEstimates: (params: GetEstimatesParams) => 
+    request<EstimatesResponse>({
+      url: '/api/introductions/estimates',
+      method: 'GET',
+      params
+    }),
+    
+  claimIntroduction: (id: string) =>
+    request({
+      url: `/api/introductions/${id}/claim`,
+      method: 'POST'
+    })
+};
+```
+
+## State Management (TanStack Query)
+
+Use TanStack Query hooks to manage server state.
+
+### Query Pattern
+
+```typescript
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/api";
+
+export const useGetContacts = (params: SearchParams) => {
+  return useQuery({
+    queryKey: ["contacts", params],
+    queryFn: () => api.contacts.search(params),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+};
+```
+
+### Mutation Pattern
+
+```typescript
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { api } from "@/lib/api";
+import { toast } from "sonner";
+
+export const useCreateContact = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: CreateContactDto) => api.contacts.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["contacts"] });
+      toast.success("Contact created successfully");
+    },
+    onError: (error) => {
+      // Axios interceptors usually handle basic error notifications
+      console.error(error);
+    }
+  });
+};
+```
+
+## Axios Configuration (core.ts)
+
+Location: `client/src/lib/api/core.ts`
+
+The project uses a central `request` helper that handles:
+1. Base URL configuration.
+2. Authentication headers (JWT).
+3. Error handling and interceptors.
+4. Response normalization.
+
+## Best Practices
+
+1. **Centralize Endpoints**: Keep all endpoints in `client/src/lib/api/` organized by domain.
+2. **Type Everything**: Ensure request payloads and response data are typed using TypeScript interfaces or Zod schemas.
+3. **Invalidate Proactively**: Always invalidate relevant query keys in the `onSuccess` callback of mutations.
+4. **Use Constants for Keys**: Use a consistent naming convention for Query Keys to avoid cache collisions.
+5. **Handle Loading/Error States**: Use the flags provided by TanStack Query (`isLoading`, `error`) to provide user feedback.
+

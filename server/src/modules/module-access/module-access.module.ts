@@ -1,0 +1,11 @@
+import { Global, Module } from "@nestjs/common";
+import { ModuleAccessController } from "./module-access.controller";
+import { ModuleAccessService } from "./module-access.service";
+
+@Global()
+@Module({
+  controllers: [ModuleAccessController],
+  providers: [ModuleAccessService],
+  exports: [ModuleAccessService],
+})
+export class ModuleAccessModule {}

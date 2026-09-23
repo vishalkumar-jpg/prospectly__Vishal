@@ -1,0 +1,51 @@
+---
+description: Custom hooks patterns and organization
+globs: client/src/hooks/**/*.ts,client/src/hooks/**/*.tsx
+---
+
+# Hooks Patterns
+
+## Hook Organization
+
+Hooks are kept in `client/src/hooks/`.
+
+## Naming Conventions
+- Always start with `use`.
+- Use camelCase (e.g., `useContactSearch`).
+- Hook files should matches the hook name (e.g., `useContactSearch.ts`).
+
+## Core Hook Categories
+
+### 1. Data Fetching Hooks (TanStack Query)
+Pattern: `use{Action}{Resource}`
+
+```typescript
+export const useContactSearch = (params: SearchParams) => {
+  return useQuery({
+    queryKey: ["contacts-search", params],
+    queryFn: () => api.contacts.search(params),
+  });
+};
+```
+
+### 2. Form Logic Hooks
+Pattern: `use{FormName}Form`
+
+```typescript
+export const useProfileForm = () => {
+  const form = useForm({ ... });
+  // Custom logic
+  return { form, ... };
+};
+```
+
+### 3. Utility Hooks
+- `use-toast.ts`: Integration with Sonner/Shadcn toast.
+- `use-mobile.tsx`: Device detection.
+- `useCurrentUser.tsx`: Auth state access.
+
+## Best Practices
+1. **Separation of Concerns**: Keep business logic out of components and inside custom hooks.
+2. **Stable References**: Use `useCallback` or `useMemo` for values returned from hooks if they are used as dependencies in other hooks.
+3. **Internal Logic**: Prefix internal helper functions within a hook with `_` if they shouldn't be exposed, or just keep them private within the file.
+4. **Loading States**: Always expose `isLoading` or `isPending` flags for UI feedback.

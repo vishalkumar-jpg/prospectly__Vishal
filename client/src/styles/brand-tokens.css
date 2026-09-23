@@ -1,0 +1,126 @@
+/**
+ * Universal brand tokens — single source of truth for the Prospectly design system
+ * (amethyst → rose → sky). Page-agnostic; reused across redesigned pages.
+ * HSL triplets (no hsl() wrapper) for use with Tailwind `hsl(var(--token) / <alpha-value>)`.
+ * Note: --gs-* (getting-started) tokens alias these values.
+ */
+@layer base {
+  :root {
+    --brand-accent-from: 270 31.3% 62.4%;
+    --brand-accent-to: 322.7 91.6% 46.5%;
+    --brand-amethyst: 270 31.3% 62.4%;
+    --brand-rose: 322.7 91.6% 46.5%;
+    --brand-sky: 196.8 73.8% 50.6%;
+    --brand-success: 152 69% 40%;
+    --brand-warning: 32 95% 44%;
+    --brand-destructive: 0 76% 57%;
+    --brand-foreground: 0 0% 100%;
+    /** Rating gold (star icon box, rating pills) — gold → amber */
+    --brand-star: 45 100% 48%;
+    --brand-star-deep: 32 92% 44%;
+    /** Hero name highlight (yellow → soft pink) shown on brand-gradient bands */
+    --brand-highlight-from: 54 100% 71%;
+    --brand-highlight-to: 332 100% 91%;
+    /** App page surface behind every in-app page (Final.html `body`). */
+    --app-background: 240 16% 97%;
+  }
+
+  .dark {
+    --brand-accent-from: 270 35% 72%;
+    --brand-accent-to: 322 85% 62%;
+    --brand-amethyst: 270 35% 72%;
+    --brand-rose: 322 85% 62%;
+    --brand-sky: 196 78% 58%;
+    --brand-success: 152 55% 52%;
+    --brand-warning: 38 92% 58%;
+    --brand-destructive: 0 82% 64%;
+    --brand-foreground: 0 0% 100%;
+    --brand-star: 45 100% 56%;
+    --brand-star-deep: 38 92% 52%;
+    /** Hero bands keep the same fixed gradient in dark, so highlight matches */
+    --brand-highlight-from: 54 100% 71%;
+    --brand-highlight-to: 332 100% 91%;
+    /** Matches the previous `bg-muted/40` blend, so dark is unchanged. */
+    --app-background: 220 48% 10%;
+  }
+}
+
+@layer components {
+  /** Amethyst–rose brand gradient (hero bands, primary CTAs) */
+  .bg-brand-gradient {
+    background-image: linear-gradient(
+      135deg,
+      hsl(var(--brand-amethyst)),
+      hsl(var(--brand-rose))
+    );
+  }
+
+  /**
+   * Dashboard hero band gradient — three-stop deep-purple → rose, matching
+   * the design reference (`--grad-hero`). Distinct from `.bg-brand-gradient`
+   * (two-stop) used on public hero bands and CTAs.
+   */
+  .bg-brand-hero-gradient {
+    background-image: linear-gradient(
+      135deg,
+      #7e5bb5 0%,
+      #a348b9 40%,
+      #e30a91 100%
+    );
+  }
+
+  /** Rating gold gradient (star icon box) */
+  .bg-brand-star-gradient {
+    background-image: linear-gradient(
+      135deg,
+      hsl(var(--brand-star)),
+      hsl(var(--brand-star-deep))
+    );
+  }
+
+  .text-brand-gradient {
+    background-image: linear-gradient(
+      135deg,
+      hsl(var(--brand-amethyst)),
+      hsl(var(--brand-rose))
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  /** Name highlight on hero bands (e.g. "Welcome back, {name}") */
+  .text-brand-highlight {
+    background-image: linear-gradient(
+      120deg,
+      hsl(var(--brand-highlight-from)) 30%,
+      hsl(var(--brand-highlight-to)) 80%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  /**
+   * Decorative two-stop radial overlay used on top of `.bg-brand-gradient`
+   * hero bands (public job, candidate-consent, prospect/interview booking).
+   * White sheen at top-right + brand-sky bloom at bottom-left, both fading
+   * to transparent. Lives here so callers can drop the inline-style with
+   * hardcoded rgba and use a single utility class instead.
+   */
+  .bg-brand-hero-overlay {
+    background:
+      radial-gradient(
+        ellipse at top right,
+        hsl(var(--brand-foreground) / 0.15) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        ellipse at bottom left,
+        hsl(var(--brand-sky) / 0.2) 0%,
+        transparent 60%
+      );
+  }
+}

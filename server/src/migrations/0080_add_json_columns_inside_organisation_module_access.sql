@@ -1,0 +1,1 @@
+ALTER TABLE "prospectly"."organisation_module_access" ADD COLUMN "config" jsonb DEFAULT '{}'::jsonb NOT NULL;

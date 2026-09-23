@@ -1,0 +1,207 @@
+/**
+ * Marketing homepage — derived from client/design/homepage_redesigned_final.html
+ * HSL triplets (no hsl() wrapper) for Tailwind `hsl(var(--home-*) / <alpha-value>)`.
+ */
+@layer base {
+  :root {
+    --home-bg: 0 0% 100%;
+    --home-bg-elevated: 220 14% 96%;
+    --home-fg: 222.2 84% 4.9%;
+    --home-muted: 220 14% 46%;
+    --home-border: 214.3 31.8% 91.4%;
+    --home-amethyst: 270 31.3% 62.4%;
+    --home-rose: 322.7 91.6% 46.5%;
+    --home-sky: 196.8 73.8% 50.6%;
+    --home-trust-green: 162 100% 36%;
+    --home-star-muted: 240 9% 88%;
+    --home-cold-text: 220 14% 82%;
+    --home-cold-icon: 220 14% 75%;
+    --home-linkedin: 201 100% 40%;
+    --home-avatar-green-2: 160 84% 40%;
+    --home-avatar-purple-2: 265 30% 50%;
+    --home-avatar-rose-2: 322 89% 37%;
+    --home-sim-surface: 220 20% 97%;
+    --home-cta-surface: 270 30% 97%;
+    --home-footer-surface: 220 20% 97%;
+    --home-shadow-ink: 0 0% 0%;
+    --home-oauth-g-blue: 217 89% 61%;
+    --home-oauth-g-green: 142 70% 45%;
+    --home-oauth-g-yellow: 45 100% 49%;
+    --home-oauth-g-red: 5 85% 55%;
+    --home-oauth-ms-red: 9 89% 54%;
+    --home-oauth-ms-green: 73 100% 37%;
+    --home-oauth-ms-blue: 198 100% 47%;
+    --home-oauth-ms-yellow: 44 100% 50%;
+  }
+
+  .dark {
+    --home-bg: 222.2 84% 4.9%;
+    --home-bg-elevated: 217 33% 12%;
+    --home-fg: 210 40% 98%;
+    --home-muted: 215 20% 65%;
+    --home-border: 217 33% 20%;
+    --home-amethyst: 270 35% 72%;
+    --home-rose: 322 85% 62%;
+    --home-sky: 196 78% 58%;
+    --home-trust-green: 162 55% 52%;
+    --home-star-muted: 240 10% 35%;
+    --home-cold-text: 220 14% 45%;
+    --home-cold-icon: 220 14% 50%;
+    --home-linkedin: 201 100% 55%;
+    --home-avatar-green-2: 160 60% 45%;
+    --home-avatar-purple-2: 265 35% 58%;
+    --home-avatar-rose-2: 322 70% 55%;
+    --home-sim-surface: 222 47% 8%;
+    --home-cta-surface: 270 25% 10%;
+    --home-footer-surface: 222 47% 8%;
+    --home-shadow-ink: 0 0% 0%;
+  }
+}
+
+@layer components {
+  .home-brand-gradient {
+    background-image: linear-gradient(
+      135deg,
+      hsl(var(--home-amethyst)),
+      hsl(var(--home-rose))
+    );
+  }
+
+  .home-text-brand-gradient {
+    background-image: linear-gradient(
+      135deg,
+      hsl(var(--home-amethyst)),
+      hsl(var(--home-rose))
+    );
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  @keyframes home-hero-line2-in {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes home-grad-shift-key {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  /** Hero line 2: entrance + shifting gradient (reference: .hero h1 .grad) */
+  .home-hero-grad-line {
+    background-image: linear-gradient(
+      135deg,
+      hsl(var(--home-amethyst)),
+      hsl(var(--home-rose))
+    );
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    line-height: 1.12;
+    padding-bottom: 0.06em;
+    animation:
+      home-hero-line2-in 0.7s ease both 0.35s,
+      home-grad-shift-key 4s ease-in-out infinite 1s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .home-hero-grad-line {
+      animation: none;
+      opacity: 1;
+    }
+  }
+
+  .home-reveal {
+    opacity: 0;
+  }
+
+  @keyframes home-bridge-up {
+    0%,
+    100% {
+      bottom: 10%;
+      opacity: 0;
+    }
+    20% {
+      opacity: 0.6;
+    }
+    50% {
+      bottom: 50%;
+      opacity: 0.6;
+    }
+    80% {
+      opacity: 0;
+    }
+    100% {
+      bottom: 90%;
+    }
+  }
+
+  @keyframes home-bridge-down {
+    0%,
+    100% {
+      top: 10%;
+      opacity: 0;
+    }
+    20% {
+      opacity: 0.6;
+    }
+    50% {
+      top: 50%;
+      opacity: 0.6;
+    }
+    80% {
+      opacity: 0;
+    }
+    100% {
+      top: 90%;
+    }
+  }
+
+  .home-reveal {
+    transform: translateY(28px);
+    transition:
+      opacity 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),
+      transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  .home-reveal.home-reveal-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .home-reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    /**
+     * Centralised reset for the homepage hero animation family
+     * (animate-home-hero-fade-up / animate-home-hero-slide-in) so pages
+     * that stagger entrances via `delay-home-hero-*` + `opacity-0` do not
+     * leave content hidden for reduced-motion users.
+     */
+    [class*="animate-home-hero-"] {
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+}

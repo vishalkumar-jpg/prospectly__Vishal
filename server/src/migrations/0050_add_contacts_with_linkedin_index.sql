@@ -1,0 +1,2 @@
+CREATE INDEX "idx_contacts_with_linkedin" ON "prospectly"."contacts" USING btree ("id") WHERE linkedin IS NOT NULL AND btrim(linkedin::text) <> '' AND email IS NULL AND phone_number IS NULL;--> statement-breakpoint
+CREATE INDEX "idx_contact_sensitive_contact_id" ON "prospectly"."contact_sensitive_data" USING btree ("contact_id");

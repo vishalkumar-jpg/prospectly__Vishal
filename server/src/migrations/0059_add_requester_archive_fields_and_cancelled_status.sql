@@ -1,0 +1,5 @@
+ALTER TABLE "prospectly"."introduction_requests" DROP CONSTRAINT IF EXISTS "introduction_requests_status_check";--> statement-breakpoint
+ALTER TABLE "prospectly"."introduction_requests" ADD COLUMN IF NOT EXISTS "requester_archive_reason" varchar(64);--> statement-breakpoint
+ALTER TABLE "prospectly"."introduction_requests" ADD COLUMN IF NOT EXISTS "requester_archive_notes" text;--> statement-breakpoint
+ALTER TABLE "prospectly"."introduction_requests" ADD COLUMN IF NOT EXISTS "requester_archived_at" timestamp with time zone;--> statement-breakpoint
+ALTER TABLE "prospectly"."introduction_requests" ADD CONSTRAINT "introduction_requests_status_check" CHECK ("prospectly"."introduction_requests"."status" IN ('pending', 'accepted', 'declined', 'intro_sent', 'meeting_scheduled', 'meeting_booked', 'meeting_rescheduled', 'meeting_completed', 'peer_feedback', 'completed', 'email_failed', 'archived'));

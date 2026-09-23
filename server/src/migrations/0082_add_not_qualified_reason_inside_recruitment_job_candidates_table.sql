@@ -1,0 +1,1 @@
+ALTER TABLE "prospectly"."recruitment_job_candidates" ADD COLUMN "not_qualified_reason" text;

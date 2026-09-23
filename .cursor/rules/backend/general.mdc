@@ -1,0 +1,20 @@
+---
+alwaysApply: true
+---
+
+# General Backend Rules (NestJS)
+
+## NestJS Best Practices
+- **Dependency Injection**: Use constructor injection for all dependencies. Avoid `@Inject()` for custom services unless using a token; favor class-based injection.
+- **DTO Validation**: Use `class-validator` and `class-transformer` for ALL input data. Ensure `ValidationPipe` is enabled with `whitelist: true` and `forbidNonWhitelisted: true`.
+- **Response Shape**: Return consistent response shapes using `src/utils/response.utils.ts`. Use `responseUtils.success(res, { data })` and `responseUtils.error({ res, error })`.
+- **Guards & Auth**: Protect sensitive endpoints using `@UseGuards(UserAuthGuard)`. Retrieve the current user via the `@CurrentUser()` decorator.
+
+## Architecture
+- **Separation of Concerns**: Controllers for routing, Services for business logic, and Validation Services for complex multi-entity integrity checks.
+- **Error Handling**: Use built-in NestJS exceptions (`NotFoundException`, `BadRequestException`, etc.). Log errors using the structured format: `CONTROLLER/SERVICE :: METHOD :: ERROR :: %j`.
+
+## Background Processing
+- Use BullMQ for background jobs (producers and workers). 
+- Ensure workers are structured in `src/worker/` and correctly registered.
+- Follow the pattern of defining a job name and processor for each background task.

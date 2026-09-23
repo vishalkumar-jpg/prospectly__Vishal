@@ -1,0 +1,1 @@
+ALTER TABLE "prospectly"."users" ADD COLUMN "last_login_at" timestamp;

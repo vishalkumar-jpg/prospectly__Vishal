@@ -1,0 +1,12 @@
+node_modules
+dist
+logs
+.DS_Store
+.git
+.gitignore
+attached_assets
+docs
+
+# Never bake secrets into the image — env is injected at runtime (EKS Secret/ConfigMap)
+.env
+.env.*

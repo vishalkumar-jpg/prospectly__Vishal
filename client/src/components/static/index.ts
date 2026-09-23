@@ -1,0 +1,12 @@
+export { StaticPageBgSvg } from "./StaticPageBgSvg";
+export type { StaticPageBgVariant } from "./StaticPageBgSvg";
+export { StaticSection } from "./StaticSection";
+export { StaticSectionHeading } from "./StaticSectionHeading";
+export { StaticTrustPill } from "./StaticTrustPill";
+export type { StaticTrustPillTone } from "./StaticTrustPill";
+export { StaticIconCard } from "./StaticIconCard";
+export type { StaticIconTone } from "./StaticIconCard";
+export { StaticPageHero } from "./StaticPageHero";
+export { StaticLegalShell } from "./StaticLegalShell";
+export type { LegalTocSection } from "./StaticLegalShell";
+export { LegalSection } from "./LegalSection";

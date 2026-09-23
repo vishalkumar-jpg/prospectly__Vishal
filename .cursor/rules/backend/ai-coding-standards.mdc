@@ -1,0 +1,27 @@
+---
+description: AI coding standards for backend, file size limits, and refactoring guidelines
+globs: server/src/**/*.ts, server/**/*.ts
+alwaysApply: true
+---
+
+# AI Coding Standards (Backend)
+
+## File Size & Complexity
+- **200-Line Limit**: Every backend file MUST NOT exceed 200 lines of actual code.
+- **Code Only Count**: The line count refers specifically to executable code. Comments, imports, and whitespace are excluded from this limit, but keep the total file length manageable.
+- **Refactoring Suggestions**:
+    - If a file exceeds or is approaching 200 lines, the AI MUST proactively suggest refactoring it into smaller, more focused modules or services.
+    - Break down complex logic into helper functions, separate services, or utility files.
+
+## AI Interaction & Fixes
+- **Optimization for "Fix in Chat"**:
+    - When providing code fixes, ensure the suggestions are concise and target only the necessary parts.
+    - Use clear, descriptive comments to explain complex logic that might be difficult for an AI to parse in a single pass.
+- **Proactive Improvements**:
+    - Suggest performance optimizations (e.g., database query improvements, caching) whenever relevant.
+    - Ensure all code follows the [General Backend Rules](mdc:.cursor/rules/backend/general.mdc) and [Database Rules](mdc:.cursor/rules/backend/db-rules.mdc).
+
+## Code Style
+- Follow the official NestJS architectural patterns.
+- Ensure all business logic is in Services, not Controllers.
+- Use meaningful names for variables, functions, and classes.

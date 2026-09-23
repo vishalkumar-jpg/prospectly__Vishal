@@ -1,0 +1,87 @@
+---
+description: React Context patterns and TanStack Query for state management
+globs: client/src/contexts/**/*,client/src/lib/queryClient.ts
+---
+
+# State Management
+
+## TanStack Query (Server State)
+
+The primary method for managing server-side data is TanStack Query.
+
+### Query Client Configuration
+
+Location: `client/src/lib/queryClient.ts`
+
+```typescript
+import { QueryClient } from "@tanstack/react-query";
+
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+```
+
+### Usage Pattern
+
+```typescript
+const { data, isLoading } = useQuery({
+  queryKey: ["resource"],
+  queryFn: () => api.resource.get(),
+});
+```
+
+## React Context (Global UI/Auth State)
+
+For global state that isn't from the server (like authentication tokens or UI preferences), use React Context.
+
+### AuthContext
+
+Location: `client/src/contexts/AuthContext.tsx`
+
+Manages the user's authentication session and current user data.
+
+```typescript
+import { useAuth } from "@/contexts/AuthContext";
+
+const { user, isAuthenticated, login, logout } = useAuth();
+```
+
+### ImportProgressContext
+
+Location: `client/src/contexts/ImportProgressContext.tsx`
+
+Manages the state of background contact imports.
+
+```typescript
+import { useImportProgress } from "@/contexts/ImportProgressContext";
+
+const { progress, isImporting, startImport } = useImportProgress();
+```
+
+## Best Practices
+
+1. **Prefer TanStack Query for API Data**: Do not sync API data into a Context manually unless necessary.
+2. **Context for UI/Session State**: Use Context for state that needs to be accessed globally but isn't persisted on the server (or is a temporary snapshot of it).
+3. **Small Contexts**: Create focused contexts rather than one giant global context.
+4. **Custom Hooks**: Always export a custom hook (e.g., `useAuth`) to access the context, including an existence check.
+
+```typescript
+export function useMyContext() {
+  const context = useContext(MyContext);
+  if (context === undefined) {
+    throw new Error("useMyContext must be used within a MyProvider");
+  }
+  return context;
+}
+```
+
+## When to Use Local State vs Context
+
+- **Local State (`useState`)**: For state that is only used within a single component or its direct children.
+- **Context**: For state that needs to be accessed by deeply nested components across different branches of the tree.
+- **TanStack Query**: For any data that comes from the backend.

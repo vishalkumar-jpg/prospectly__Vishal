@@ -1,0 +1,4 @@
+ALTER TABLE "prospectly"."recruitment_job_pool_matches" ADD COLUMN "source" varchar(30) DEFAULT 'ai_matched' NOT NULL;--> statement-breakpoint
+ALTER TABLE "prospectly"."recruitment_job_pool_matches" ADD COLUMN "failure_reason" varchar(500);--> statement-breakpoint
+ALTER TABLE "prospectly"."recruitment_job_pool_matches" ADD COLUMN "resume_media_id" uuid;--> statement-breakpoint
+ALTER TABLE "prospectly"."recruitment_job_pool_matches" ADD CONSTRAINT "recruitment_job_pool_matches_resume_media_id_media_id_fk" FOREIGN KEY ("resume_media_id") REFERENCES "prospectly"."media"("id") ON DELETE no action ON UPDATE no action;

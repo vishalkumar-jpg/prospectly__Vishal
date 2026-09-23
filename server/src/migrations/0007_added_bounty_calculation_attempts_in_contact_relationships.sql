@@ -1,0 +1,1 @@
+ALTER TABLE "prospectly"."contact_relationships" ADD COLUMN "bounty_calculation_attempts" integer DEFAULT 0;

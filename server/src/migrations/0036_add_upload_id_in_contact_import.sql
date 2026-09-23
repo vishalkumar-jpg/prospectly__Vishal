@@ -1,0 +1,1 @@
+ALTER TABLE "prospectly"."contact_file_imports" ADD COLUMN "upload_id" varchar(255);

@@ -1,0 +1,1 @@
+ALTER TABLE "prospectly"."recruitment_upload_jobs" ADD COLUMN "candidate_email_hash" varchar(64);

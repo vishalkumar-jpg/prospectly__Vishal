@@ -1,0 +1,2 @@
+ALTER TABLE "prospectly"."contact_enrichments" ADD COLUMN "external_person_id" varchar(100);--> statement-breakpoint
+CREATE INDEX "idx_contact_enrichments_external_person_id" ON "prospectly"."contact_enrichments" USING btree ("external_person_id");

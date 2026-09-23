@@ -1,0 +1,2 @@
+ALTER TABLE "prospectly"."contact_enrichments" ADD COLUMN "enrichment_source" varchar(50) DEFAULT 'clay';--> statement-breakpoint
+ALTER TABLE "prospectly"."queue_enrichments" ADD COLUMN "enrichment_source" varchar(50) DEFAULT 'clay';

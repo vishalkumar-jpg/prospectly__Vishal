@@ -1,0 +1,287 @@
+---
+description: UTC date/timestamp handling rules for frontend - ensuring consistent date storage and display
+globs: client/src/**/*.ts,client/src/**/*.tsx
+---
+
+# Date/Time Handling Rules (Frontend)
+
+## Core Principle
+
+**All dates sent to the backend MUST be in UTC format.** The frontend should use the centralized dayjs utilities to ensure consistency.
+
+## Utility File Location
+
+- **Path**: `client/src/lib/dayjs.ts`
+- **Import**: `import { toUTC, utcDayjs } from '@/lib/dayjs';`
+
+## Functions Available
+
+### `toUTC(date?)` - For API Requests
+- **Purpose**: Converts a date to a UTC Date object for sending to the backend API.
+- **Returns**: `Date` object in UTC
+- **Use When**: 
+  - Sending dates in API request payloads
+  - Submitting form data with date fields
+  - Any date value that will be sent to the backend
+
+**Examples:**
+```typescript
+import { toUTC } from '@/lib/dayjs';
+
+// Form submission
+const handleSubmit = async (data: FormData) => {
+  await api.post('/endpoint', {
+    ...data,
+    startDate: toUTC(data.startDate),
+    endDate: toUTC(data.endDate),
+  });
+};
+
+// Current timestamp
+const payload = {
+  timestamp: toUTC(),
+  // ... other fields
+};
+```
+
+### `utcDayjs(date?)` - For Date Operations & Display
+- **Purpose**: Returns a UTC dayjs object for date calculations, comparisons, and formatting.
+- **Returns**: `dayjs.Dayjs` object in UTC mode
+- **Use When**:
+  - Performing date arithmetic (add, subtract)
+  - Comparing dates
+  - Formatting dates for display
+  - Parsing dates from API responses
+  - Date validation in forms
+
+**Examples:**
+```typescript
+import { utcDayjs } from '@/lib/dayjs';
+
+// Formatting for display
+const formattedDate = utcDayjs(apiDate).format('MMM DD, YYYY');
+const formattedTime = utcDayjs(apiDate).format('h:mm A');
+
+// Date calculations
+const tomorrow = utcDayjs().add(1, 'day');
+const nextWeek = utcDayjs().add(7, 'days');
+
+// Date comparisons
+const isPast = utcDayjs(date).isBefore(utcDayjs());
+const isFuture = utcDayjs(date).isAfter(utcDayjs());
+
+// Parsing API responses
+const apiDate = utcDayjs(response.createdAt);
+```
+
+## Date Display vs Storage
+
+### Storage (Sending to Backend)
+Always convert to UTC before sending:
+
+```typescript
+import { toUTC } from '@/lib/dayjs';
+
+// In form handlers
+const submitData = {
+  eventDate: toUTC(formData.eventDate),
+  deadline: toUTC(formData.deadline),
+};
+
+// In API calls
+await updateContact({
+  lastContacted: toUTC(selectedDate),
+});
+```
+
+### Display (Showing to User)
+Use `utcDayjs()` for formatting, but consider user's timezone for display:
+
+```typescript
+import { utcDayjs } from '@/lib/dayjs';
+import dayjs from 'dayjs';
+
+// Option 1: Display in UTC (if that's the requirement)
+const displayDate = utcDayjs(apiDate).format('YYYY-MM-DD HH:mm:ss UTC');
+
+// Option 2: Convert to user's local timezone for display
+const displayDate = utcDayjs(apiDate).local().format('MMM DD, YYYY h:mm A');
+
+// Option 3: Use dayjs with timezone plugin for specific timezone
+const displayDate = dayjs(apiDate).tz(userTimezone).format('MMM DD, YYYY');
+```
+
+## Common Patterns
+
+### Pattern 1: Form Date Input → API
+```typescript
+import { toUTC } from '@/lib/dayjs';
+
+const handleSubmit = async (formData: FormData) => {
+  const payload = {
+    ...formData,
+    // Convert all date fields to UTC
+    startDate: toUTC(formData.startDate),
+    endDate: toUTC(formData.endDate),
+  };
+  
+  await api.post('/endpoint', payload);
+};
+```
+
+### Pattern 2: API Response → Display
+```typescript
+import { utcDayjs } from '@/lib/dayjs';
+
+const ContactCard = ({ contact }: { contact: Contact }) => {
+  // Parse UTC date from API
+  const lastContacted = utcDayjs(contact.lastContacted);
+  
+  return (
+    <div>
+      <p>Last contacted: {lastContacted.format('MMM DD, YYYY')}</p>
+      <p>Time: {lastContacted.local().format('h:mm A')}</p>
+    </div>
+  );
+};
+```
+
+### Pattern 3: Date Validation in Forms
+```typescript
+import { utcDayjs } from '@/lib/dayjs';
+import { z } from 'zod';
+
+const schema = z.object({
+  startDate: z.date().refine(
+    (date) => utcDayjs(date).isAfter(utcDayjs()),
+    { message: 'Start date must be in the future' }
+  ),
+  endDate: z.date().refine(
+    (date, ctx) => utcDayjs(date).isAfter(utcDayjs(ctx.parent.startDate)),
+    { message: 'End date must be after start date' }
+  ),
+});
+```
+
+### Pattern 4: Date Range Calculations
+```typescript
+import { utcDayjs } from '@/lib/dayjs';
+
+const getDateRange = (start: Date, end: Date) => {
+  const startDate = utcDayjs(start);
+  const endDate = utcDayjs(end);
+  
+  return {
+    days: endDate.diff(startDate, 'day'),
+    hours: endDate.diff(startDate, 'hour'),
+    minutes: endDate.diff(startDate, 'minute'),
+  };
+};
+```
+
+## Common Mistakes to Avoid
+
+❌ **DON'T**: Send dates without UTC conversion
+```typescript
+// WRONG - sends local timezone
+await api.post('/endpoint', {
+  date: new Date(),
+});
+```
+
+❌ **DON'T**: Use `Date.now()` for timestamps
+```typescript
+// WRONG - returns number, not Date object
+await api.post('/endpoint', {
+  timestamp: Date.now(),
+});
+```
+
+❌ **DON'T**: Mix timezone-aware and timezone-naive dates
+```typescript
+// WRONG - inconsistent handling
+const date1 = new Date();
+const date2 = toUTC();
+```
+
+❌ **DON'T**: Parse API dates without UTC handling
+```typescript
+// WRONG - may interpret as local time
+const date = new Date(apiResponse.createdAt);
+```
+
+✅ **DO**: Always use `toUTC()` when sending to backend
+```typescript
+// CORRECT - ensures UTC format
+await api.post('/endpoint', {
+  date: toUTC(formDate),
+});
+```
+
+✅ **DO**: Use `utcDayjs()` for parsing API responses
+```typescript
+// CORRECT - properly handles UTC dates
+const date = utcDayjs(apiResponse.createdAt);
+```
+
+## When to Use Which Function
+
+| Scenario | Function | Reason |
+|----------|----------|--------|
+| Sending dates to API | `toUTC()` | Returns Date object in UTC |
+| Formatting for display | `utcDayjs()` | Rich formatting options |
+| Date calculations | `utcDayjs()` | Fluent API for operations |
+| Date comparisons | `utcDayjs()` | Better comparison methods |
+| Parsing API responses | `utcDayjs()` | Properly handles UTC dates |
+| Form validation | `utcDayjs()` | Date comparison methods |
+| Current timestamp for API | `toUTC()` | Direct Date object |
+
+## Integration with React Hook Form
+
+When using React Hook Form with date inputs:
+
+```typescript
+import { useForm } from 'react-hook-form';
+import { toUTC } from '@/lib/dayjs';
+
+const MyForm = () => {
+  const { handleSubmit, register } = useForm();
+  
+  const onSubmit = async (data: FormData) => {
+    // Convert date fields to UTC before submission
+    const payload = {
+      ...data,
+      eventDate: toUTC(data.eventDate),
+    };
+    
+    await api.post('/endpoint', payload);
+  };
+  
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <input type="datetime-local" {...register('eventDate')} />
+      {/* ... other fields */}
+    </form>
+  );
+};
+```
+
+## Integration with Zod Validation
+
+When validating dates with Zod:
+
+```typescript
+import { z } from 'zod';
+import { utcDayjs } from '@/lib/dayjs';
+
+const schema = z.object({
+  startDate: z.date(),
+  endDate: z.date(),
+}).refine(
+  (data) => utcDayjs(data.endDate).isAfter(utcDayjs(data.startDate)),
+  {
+    message: 'End date must be after start date',
+    path: ['endDate'],
+  }
+);
+```

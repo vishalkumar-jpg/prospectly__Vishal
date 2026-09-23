@@ -1,0 +1,40 @@
+import { oauthConfig } from "config/oauth.config";
+import { toUTC } from "utils/dayjs";
+
+export async function refreshMicrosoftToken(refreshToken: string): Promise<{
+  access_token: string;
+  refresh_token?: string;
+  expiry_date?: number;
+}> {
+  const { clientId } = oauthConfig.microsoft;
+  const { clientSecret } = oauthConfig.microsoft;
+
+  if (!clientId || !clientSecret) {
+    throw new Error("Microsoft OAuth credentials not configured");
+  }
+
+  const tokenResponse = await fetch(oauthConfig.microsoft.tokenEndpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      client_id: clientId,
+      client_secret: clientSecret,
+      refresh_token: refreshToken,
+      grant_type: "refresh_token",
+    }),
+  });
+
+  if (!tokenResponse.ok) {
+    const errorText = await tokenResponse.text();
+    throw new Error(`Microsoft token refresh failed: ${errorText}`);
+  }
+
+  const tokenData = await tokenResponse.json();
+  const now = toUTC().valueOf();
+
+  return {
+    access_token: tokenData.access_token,
+    refresh_token: tokenData.refresh_token,
+    expiry_date: now + tokenData.expires_in * 1000,
+  };
+}

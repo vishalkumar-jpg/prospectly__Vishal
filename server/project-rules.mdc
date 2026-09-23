@@ -1,0 +1,578 @@
+# Project Structure Guide
+
+This project follows a modular structure, especially suited for NestJS applications. Use this guide when creating new modules to ensure consistency.
+
+## Main Directories
+
+- [`src/`](mdc:src/): Main source code directory.
+  - [`app.module.ts`](mdc:src/app.module.ts): Root module of the application.
+  - [`modules/`](mdc:src/modules/): Contains all feature modules. **New modules should be created here.**
+    - Each module should have its own folder, e.g., `users/`, `auth/`, etc.
+    - Inside each module folder:
+      - `module-name.module.ts`: The module definition.
+      - `module-name.controller.ts`: Controller(s) for the module.
+      - `module-name.service.ts`: Service(s) for the module.
+      - `module-name.entity.ts` (if applicable): Entity definitions.
+      - `module-name.dto.ts` (if applicable): DTOs for data validation/transfer.
+      - `module-name.response.ts` (if applicable): Response types for the module.
+      - `module-name.constants.ts` (if applicable): Constants for the module.
+      - `module-name.helpers.ts` (if applicable): Helper functions for the module.
+      - `module-name.types.ts` (if applicable): Type definitions for the module.
+      - `module-name.utils.ts` (if applicable): Utility functions for the module.
+      - `module-name.validator.service.ts` (if applicable): Validator functions for the module.
+  - [`config/`](mdc:src/config/): Application and environment configuration files.
+  - [`constants/`](mdc:src/constants/): Application-wide constants, enums, etc.
+  - [`decorators/`](mdc:src/decorators/): Custom decorators which are used in the project.
+    - Define new decorators in this directory based on the project needs which will be used commonly across the project.
+  - [`filters/`](mdc:src/filters/): Exception filters.
+  - [`guards/`](mdc:src/guards/): Define Guards for handling the request/response.
+  - [`interceptors/`](mdc:src/interceptors/): Interceptors for request/response handling.
+  - [`services/`](mdc:src/services/): Shared services (e.g., logger, database, stripe, notification, etc.).
+    - Define new services in this directory based on the project needs which will be used commonly across the project.
+    - If a service is used in a single module, it should be placed in the module directory.
+  - [`types/`](mdc:src/types/): Type definitions common across the project.
+  - [`utils/`](mdc:src/utils/): Utility functions common across the project.
+  - [`worker/`](mdc:src/worker/): It's separate application for running the workers. And it will be mainly used for running the side tasks which will help to reduce the load on the main application.
+    - Mainly cron jobs will be defined here.
+
+## Module Creation Guidelines
+
+- Place new modules in [`src/modules/`](mdc:src/modules/).
+- Follow the naming convention: `module-name/` for the folder, and `module-name.module.ts`, etc., for files.
+- Register new modules in [`app.module.ts`](mdc:src/app.module.ts) if they should be part of the main app.
+- (if applicable): Import newly created entity inside the `DatabaseEntityModule` in `src/modules/database/database-entity.module.ts` file.
+- Controller file should call service functions and can not have any business logic.
+- Define new DTOs based on the entity and service needs and give proper validation rules for the data.
+
+## Naming Conventions
+
+### Directories
+
+- Use kebab-case (e.g., `module-name`, `module-name-2`)
+
+### Files
+
+- Use kebab-case for directory names
+- Use PascalCase with type suffix for files:
+  - `*.controller.ts`
+  - `*.service.ts`
+  - `*.entity.ts`
+  - `*.module.ts`
+  - `*.constants.ts`
+  - `*.response.ts`
+  - `*.validate.service.ts`
+  - `*.dto.ts`
+
+### Classes/Interfaces
+
+- Use PascalCase (e.g., `EmployeePayService`, `CreateEmployeePayDto`)
+
+### Variables/Methods
+
+- Use camelCase (e.g., `variableNameId`, `variableName`)
+
+### Constants
+
+- Use UPPER_SNAKE_CASE for constant objects
+- Group related constants in objects (e.g., `SUCCESS_MESSAGES`)
+
+## Entity Implementation
+
+### Base Entity Extension
+
+```typescript
+@Entity("ModuleName")
+export class ModuleNameEntity extends BaseEntity {
+  // Entity-specific columns
+
+  @BeforeInsert()
+  async generateUuid() {
+    this.id = await generateKSUID("prefix");
+  }
+}
+```
+
+### Best Practices
+
+- Extend `BaseEntity` for audit fields (createdAt, updatedAt, deletedAt, createdBy, updatedBy)
+- Use `@BeforeInsert()` with `generateKSUID()` for ID generation
+- Use descriptive column types (`varchar`, `decimal`, `boolean`, `timestamp`)
+- Include proper relationships with `@ManyToOne`, `@OneToOne`, `@JoinColumn`
+- Use nullable properties with `nullable: true` where appropriate
+- Add comments for business-critical fields using `// !!!!`
+- `prefix` is a small string which is used to generate the ID and should not exceed the 3 characters. It should be unique for all the entities. (eg: Entity name is `User` then `prefix` should be `usr`)
+
+## DTO Implementation
+
+### Structure
+
+```typescript
+export class CreateModuleNameDto {
+  @ApiProperty({ description: "Field description", example: "example value" })
+  @IsString()
+  @IsNotEmpty()
+  fieldName: string;
+
+  @ApiPropertyOptional({ description: "Optional field", nullable: true })
+  @IsString()
+  @IsOptional()
+  optionalField?: string;
+
+  @ApiProperty({ type: [NestedDto] })
+  @IsArray()
+  @ArrayNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => NestedDto)
+  @IsOptional()
+  nestedArray?: NestedDto[];
+}
+
+export class UpdateModuleNameDto extends PartialType(CreateModuleNameDto) {}
+```
+
+### Validation Rules
+
+- Use class-validator decorators (`@IsString()`, `@IsNumber()`, `@IsNotEmpty()`, `@IsOptional()` etc.)
+- Include Swagger decorators (`@ApiProperty()`, `@ApiPropertyOptional()`)
+- Use `@Type()` for nested objects and arrays
+- Use `@ValidateNested()` for complex nested validation
+- Use enums with `@IsEnum()` for controlled values
+- If needed create multiple DTO files for the same entity based on the needs by creating dtos folder inside the module directory.
+
+## Database Operations
+
+### Transaction Management
+
+- Use `DatabaseService.createQueryRunner()` for transactions
+- Always include `queryRunner.commitTransaction()` and `queryRunner.rollbackTransaction()`
+- Use `queryRunner.release()` in finally block
+- Pass `{ data: { userId } }` for audit tracking
+
+### Query Patterns
+
+- Use QueryBuilder for complex queries
+- Include proper select fields from constants
+- Use parameterized queries to prevent SQL injection
+- Implement soft delete where appropriate
+
+## Module Configuration
+
+### Structure
+
+```typescript
+@Module({
+  controllers: [ModuleNameController],
+  providers: [ModuleNameService, ModuleNameValidateService, ValidationService],
+})
+export class ModuleNameModule {}
+```
+
+## API Design
+
+### RESTful Conventions
+
+- POST `/module-name` - Create
+- GET `/module-names` - Get all with the query params which are defined in the `ModuleNameQueryDto` class.
+- GET `/module-name/:id` - Get by ID
+- GET `/module-name/by-field/:value` - Get by specific field
+- PUT `/module-name/:id` - Update
+- DELETE `/module-name` - Bulk delete with body `{ ids: string[] }`
+
+### Response Format
+
+```typescript
+// Success response
+{
+  data: T,
+  status: number
+}
+
+// Error response
+{
+  statusCode: number,
+  message: string,
+  errors?: Array<{ row: number; errorMessages: string[] }>
+}
+```
+
+## Controller Implementation
+
+### Structure
+
+```typescript
+@ApiTags("Module Name")
+@Controller("module-name")
+@UseGuards(UserAuthGuard)
+export class ModuleNameController {
+  constructor(private readonly moduleNameService: ModuleNameService) {}
+
+  @ApiSwaggerResponse(ResponseType)
+  @Post()
+  async create(@CurrentUser() { id }: ReqUser, @Body() createDto: CreateModuleNameDto, @Res() res: Response) {
+    try {
+      const data = await this.moduleNameService.create(id, createDto);
+      return responseUtils.success(res, { data });
+    } catch (error) {
+      logger.error(`CONTROLLER :: METHOD :: ERROR :: ${metaType.Json}`, error);
+      return responseUtils.error({ res, error });
+    }
+  }
+}
+```
+
+### Best Practices
+
+- Use `@ApiTags()` for Swagger grouping
+- Include `@UseGuards(UserAuthGuard)` for authentication
+- Use `@ApiSwaggerResponse()` custom decorator for Swagger documentation
+- Use `responseUtils.success()` and `responseUtils.error()` for consistent responses from the custom response utils file in `src/utils/response.utils.ts`
+- Include proper error logging in controllers
+- (if applicable): Use `@CurrentUser()` decorator for user context (e.g., `@CurrentUser() { id }: ReqUser`)
+
+## Service Implementation
+
+### Structure
+
+```typescript
+@Injectable()
+export class ModuleNameService {
+  constructor(
+    @InjectRepository(ModuleNameEntity)
+    private readonly moduleNameRepository: Repository<ModuleNameEntity>,
+    private readonly validateService: ModuleNameValidateService,
+    private readonly databaseService: DatabaseService,
+  ) {}
+
+  /**
+   * Create a new entity
+   * @param userId - The user ID
+   * @param createDto - The create DTO
+   * @returns The created entity
+   */
+  async createModuleName(userId: string, createDto: CreateModuleNameDto): Promise<MessageResponse> {
+    const queryRunner = await this.databaseService.createQueryRunner();
+
+    try {
+      // Validation
+      await this.validateService.validateRelations(createDto, queryRunner);
+
+      // Business logic with transaction
+      const result = await queryRunner.manager.save(entity, { data: { userId } });
+
+      await queryRunner.commitTransaction();
+      return { message: MODULE_NAME_MESSAGES.INFO.CREATED };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      logger.error(`SERVICE :: METHOD :: ERROR :: ${metaType.Json}`, error);
+      throw new BadRequestException(error.message);
+    } finally {
+      await queryRunner.release();
+      logger.info(`SERVICE :: METHOD :: releasing database connection`);
+    }
+  }
+
+  /**
+   * Update an entity
+   * @param id - The entity ID
+   * @param updateDto - The update DTO
+   * @returns The updated entity
+   */
+  async updateModuleName(id: string, updateDto: UpdateModuleNameDto): Promise<MessageResponse> {
+    const record = await this.moduleNameRepository.createQueryBuilder("moduleName").where({ id }).getOne();
+
+    if (!record) {
+      throw new NotFoundException(MODULE_NAME_MESSAGES.ERROR.NOT_FOUND);
+    }
+    await this.moduleNameRepository.update(id, updateDto);
+
+    return { message: MODULE_NAME_MESSAGES.INFO.UPDATED };
+  }
+
+  /**
+   * Find all entities with filters, sorting, and pagination
+   * @param query - The query DTO
+   * @returns The entities and pagination details
+   */
+  async findModuleNames(query: ModuleNameQueryDto): Promise<ResponseDto<ModuleNameListResponse>> {
+    const { page = 1, limit = 20, sort = "createdAt", order = "DESC", search, isPagination = true, id } = query;
+
+    const qb = this.moduleNameRepository.createQueryBuilder("moduleName");
+
+    // Search (example: search by name or description)
+    if (search) {
+      qb.andWhere("(moduleName.name ILIKE :search OR moduleName.description ILIKE :search)", { search: `%${search}%` });
+    }
+
+    // Filter by ID
+    if (id) {
+      qb.andWhere("moduleName.id = :id", { id });
+    }
+
+    // Sorting
+    qb.orderBy(`moduleName.${sort}`, order.toUpperCase() === "ASC" ? "ASC" : "DESC");
+
+    // Pagination
+    if (isPagination) {
+      qb.skip((page - 1) * limit).take(limit);
+    }
+
+    // Execute query
+    const [data, total] = await qb.getManyAndCount();
+
+    return {
+      data: transformToInstance(ModuleNameResponse, data),
+      total,
+      page: isPagination ? page : 1,
+      limit: isPagination ? limit : total,
+      totalPages: isPagination ? Math.ceil(total / limit) : 1,
+    };
+  }
+
+  async deleteModuleNames(ids: string[]): Promise<MessageResponse> {
+    const records = await this.moduleNameRepository
+      .createQueryBuilder("moduleName")
+      .where({ id: In(ids) })
+      .getMany();
+
+    if (!records.length) {
+      return true;
+    }
+
+    await this.moduleNameRepository.softRemove(records);
+
+    return { message: MODULE_NAME_MESSAGES.INFO.DELETED };
+  }
+}
+```
+
+#### Notes:
+
+- Provide proper comments for the service methods. Use `/** */` for the comments. Also include the example logic with sample data in the comments.
+- Maintain return type for the service methods.
+- `ModuleNameQueryDto` should define `page`, `limit`, `sort`, `order`, `search`, `isPagination`, `id` fields.
+- Adjust search logic as per your entity fields and requirements.
+- `transformToInstance` is a helper function to transform the data to the response type based on the response class `ModuleNameResponse` defined inside the `module-name.response.ts` file.
+- `MessageResponse` is a custom response type defined inside the `modules/swagger/dtos/response.dtos.ts` file.
+- Include proper logs for debugging and error handling in the service methods where needed.
+
+## Validation Service Implementation
+
+### Structure
+
+```typescript
+@Injectable()
+export class ModuleNameValidateService {
+  constructor(
+    private readonly validationService: ValidationService,
+    @InjectRepository(ModuleNameEntity)
+    private readonly moduleNameRepository: Repository<ModuleNameEntity>,
+  ) {}
+
+  async validateRelation(id: string, shouldThrow: boolean = true, queryRunner?: QueryRunner) {
+    const repository = queryRunner ? queryRunner.manager.getRepository(RelatedEntity) : this.moduleNameRepository;
+
+    const record = await repository.createQueryBuilder("alias").where("alias.id = :id", { id }).getOne();
+
+    if (!record && shouldThrow) {
+      throw new NotFoundException(MESSAGES.ERROR.RELATED_NOT_FOUND);
+    }
+
+    return record;
+  }
+
+  async validateUniqueField(value: string, queryRunner: QueryRunner, excludeId?: string) {
+    const repository = queryRunner.manager.getRepository(ModuleNameEntity);
+
+    return this.validationService.isExists({
+      repo: repository,
+      name: "fieldName",
+      value,
+      excludeId,
+    });
+  }
+}
+```
+
+#### Notes:
+
+- ValidationService is a custom service for validation which is defined inside the `src/services/validation.service.ts` file.
+
+## Response Types Implementation
+
+### Structure
+
+```typescript
+export class ModuleNameResponse {
+  @Expose()
+  @ApiPropertyWritable()
+  id: string;
+
+  @Expose()
+  @ApiPropertyWritable()
+  createdAt: Date;
+
+  @Expose()
+  @ApiPropertyWritable()
+  updatedAt: Date;
+
+  @Expose()
+  @ApiPropertyWritable({ nullable: true })
+  optionalField?: string;
+
+  @Expose()
+  @ApiPropertyWritable({ enum: ModuleNameEnum, enumName: "ModuleNameEnum" })
+  enumField: string;
+
+  @Expose()
+  @ApiPropertyWritable({ type: NestedResponse })
+  @Type(() => NestedResponse)
+  nestedObject: NestedResponse;
+
+  @Expose()
+  @ApiPropertyWritable({ type: [ArrayResponse] })
+  @Type(() => ArrayResponse)
+  arrayField: ArrayResponse[];
+}
+
+export class ModuleNameListResponse {
+  @Expose()
+  @ApiPropertyWritable({ type: [ModuleNameResponse] })
+  @Type(() => ModuleNameResponse)
+  data: ModuleNameResponse[];
+
+  @Expose()
+  @ApiPropertyWritable()
+  total: number;
+
+  @Expose()
+  @ApiPropertyWritable()
+  page: number;
+
+  @Expose()
+  @ApiPropertyWritable()
+  limit: number;
+
+  @Expose()
+  @ApiPropertyWritable()
+  totalPages: number;
+}
+```
+
+### Best Practices
+
+- Use `@Expose()` for serialization control
+- Use `@ApiPropertyWritable()` for Swagger documentation
+- Include proper typing with `@Type()` for nested objects
+- Mark nullable fields appropriately
+- Use enum documentation for controlled values
+
+## Constants Implementation
+
+### Structure
+
+```typescript
+export const MODULE_NAME_MESSAGES = {
+  INFO: {
+    CREATED: "Module name created successfully",
+    UPDATED: "Module name updated successfully",
+    DELETED: "Module name deleted successfully",
+  },
+  ERROR: {
+    NOT_FOUND: "Module name not found",
+    DUPLICATE_FIELD: "Field already exists",
+    INVALID_DATA: "Invalid data provided",
+  },
+};
+
+export const MODULE_NAME_SORT_FIELDS = {
+  ...COMMON_SORT_FIELDS,
+  CUSTOM_FIELD: "customField",
+};
+
+export const SELECT_MODULE_NAME = {
+  FIND_ONE: [
+    "moduleName.id",
+    "moduleName.createdAt",
+    "moduleName.updatedAt",
+    // Include specific fields for queries
+  ],
+};
+
+export enum ModuleNameEnum {
+  VALUE_ONE = "Value One",
+  VALUE_TWO = "Value Two",
+}
+```
+
+## Error Handling
+
+### Patterns
+
+- Use specific exception types (`NotFoundException`, `BadRequestException`)
+- Include descriptive error messages from constants
+- Implement proper transaction rollback
+- Log errors with structured format: `SERVICE :: METHOD :: ERROR :: ${metaType.Json}`
+- Use try-catch-finally blocks consistently
+
+### Logging Strategy
+
+```typescript
+// Error logging
+logger.error(`CONTEXT :: METHOD :: ERROR :: ${metaType.Json}`, error);
+
+// Info logging
+logger.info(`CONTEXT :: METHOD :: INFO MESSAGE`);
+
+// Use metaType enum for consistent formatting
+metaType.Json; // %j for JSON objects
+metaType.String; // %s for strings
+metaType.Object; // %O for objects
+```
+
+## Code Quality Standards
+
+### TypeScript Configuration
+
+- **Strict Mode**: The project's [`tsconfig.json`](mdc:tsconfig.json) should have `strict` mode enabled to enforce strong type-checking.
+- **Path Aliases**: Use path aliases (e.g., `services/*`, `utils/*`, `types/*`, `constants/*`, `decorators/*`, `filters/*`, `guards/*`, `interceptors/*`, `modules/*`, `services/*`, `types/*`, `utils/*`) for clean, absolute imports. These are configured in `tsconfig.json`.
+- **Type Everything**: Provide types for all variables, function parameters, and return values. Avoid using `any` unless absolutely necessary.
+- Use interfaces for DTOs and response types
+- Use const objects instead of enums where possible
+- Include proper generic types
+- Use optional chaining and nullish coalescing
+
+### Linting and Formatting
+
+- **ESLint**: The project is configured with ESLint for identifying and reporting on patterns in JavaScript/TypeScript. See [`eslint.config.mjs`](mdc:eslint.config.mjs).
+- **Prettier**: Prettier is used for automatic code formatting to ensure a consistent style. See [`.prettierrc.cjs`](mdc:.prettierrc.cjs).
+- **IDE Integration**: It is highly recommended to set up your IDE to format on save and show linting errors as you type.
+- **Scripts**: Use `npm run lint` and `npm run format` before committing your code.
+
+### Best Practices
+
+- Follow SOLID principles
+- Keep code DRY
+- Use consistent naming conventions
+- Implement proper separation of concerns
+- Write clean, maintainable code
+- Include comprehensive error handling
+
+## Security Implementation
+
+- Use `@UseGuards(UserAuthGuard)` for authentication
+- Include Role Guard for the endpoints which are protected by roles.
+- Validate all input data with class-validator
+- Use parameterized queries
+- Implement proper error handling without data leakage
+- Include audit fields in all entities
+
+## Performance Considerations
+
+- Use proper database indexing
+- Optimize query selection with constants
+- Implement pagination where appropriate
+- Use efficient query patterns
+- Monitor query performance
+- Use caching strategies where beneficial
+
+Refer to existing modules (e.g., [`users/`](mdc:src/modules/users/), [`auth/`](mdc:src/modules/auth/)) for examples.

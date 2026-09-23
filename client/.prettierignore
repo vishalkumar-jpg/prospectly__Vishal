@@ -1,0 +1,12 @@
+# Ignore artifacts:
+/build
+/dist
+/node_modules
+
+# Ignore files:
+/public
+/src/assets/styles
+/src/index.css
+package.json
+pnpm-lock.yaml
+package.lock.json

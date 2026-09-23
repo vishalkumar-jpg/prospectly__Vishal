@@ -1,0 +1,1 @@
+ALTER TABLE "prospectly"."contact_file_imports" ADD COLUMN "enrichment_source" varchar(50) DEFAULT 'apollo' NOT NULL;

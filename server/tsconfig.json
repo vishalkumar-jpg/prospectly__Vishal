@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2021",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "paths": {
+      "config/*": ["src/config/*"],
+      "constants/*": ["src/constants/*"],
+      "database/*": ["src/database/*"],
+      "decorators/*": ["src/decorators/*"],
+      "filters/*": ["src/filters/*"],
+      "guards/*": ["src/guards/*"],
+      "interceptors/*": ["src/interceptors/*"],
+      "migrations/*": ["src/migrations/*"],
+      "modules/*": ["src/modules/*"],
+      "services/*": ["src/services/*"],
+      "shared/*": ["src/shared/*"],
+      "strategies/*": ["src/strategies/*"],
+      "types/*": ["src/types/*"],
+      "utils/*": ["src/utils/*"],
+      "worker/*": ["src/worker/*"]
+    },
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": false,
+    "noFallthroughCasesInSwitch": false,
+    "esModuleInterop": true,
+    "resolveJsonModule": true
+  },
+  "include": ["src/**/*", "drizzle.config.ts", "vite-server.ts", "crypto.ts"],
+  "exclude": ["node_modules", "dist", "test"]
+}

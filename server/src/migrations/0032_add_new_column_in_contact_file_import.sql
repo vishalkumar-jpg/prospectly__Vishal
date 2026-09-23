@@ -1,0 +1,1 @@
+ALTER TABLE "prospectly"."contact_file_imports" ADD COLUMN "completion_warnings" text;

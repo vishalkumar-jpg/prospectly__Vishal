@@ -1,0 +1,2 @@
+DROP INDEX "prospectly"."idx_recruitment_notifications_job_type";--> statement-breakpoint
+CREATE INDEX "idx_recruitment_notifications_job_type_created" ON "prospectly"."recruitment_notifications" USING btree ("job_id","type","created_at");

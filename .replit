@@ -1,0 +1,79 @@
+modules = ["bun", "nodejs-22", "postgresql-16"]
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Start application"
+
+[[workflows.workflow]]
+name = "Start application"
+author = "agent"
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "bun run dev"
+waitForPort = 5000
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[[ports]]
+localPort = 5001
+externalPort = 3001
+
+[[ports]]
+localPort = 5002
+externalPort = 3002
+
+[[ports]]
+localPort = 5003
+externalPort = 3003
+
+[[ports]]
+localPort = 24678
+externalPort = 3000
+
+[agent]
+expertMode = true
+
+[nix]
+channel = "stable-25_05"
+packages = ["nodejs_22"]
+
+[deployment]
+deploymentTarget = "cloudrun"
+build = ["sh", "-c", "cd server && bun run build && cd ../client && bun run build"]
+run = ["sh", "-c", "cd server && NODE_ENV=production node dist/src/main.js & NODE_ENV=production node dist/src/worker.js & wait"]
+
+[userenv]
+
+[userenv.shared]
+RESEND_FROM_EMAIL = "introductions@email.officebeacon.net"
+ENABLE_QUEUES = "true"
+AWS_SIGNED_URL_EXPIRATION = "1800"
+MICROSOFT_AUTH_REDIRECT_URI = "https://feaa8687-b31b-46ba-92e1-f8f6719792b4-00-1nipa7cnf1fo7.riker.replit.dev/api/auth/microsoft/callback"
+CORS_ORIGINS = "https://dev.prospectly.com"
+
+[userenv.development]
+GOOGLE_REDIRECT_URI = "https://feaa8687-b31b-46ba-92e1-f8f6719792b4-00-1nipa7cnf1fo7.riker.replit.dev/api/auth/google/callback"
+FRONTEND_URL = "https://feaa8687-b31b-46ba-92e1-f8f6719792b4-00-1nipa7cnf1fo7.riker.replit.dev"
+API_URL = "https://feaa8687-b31b-46ba-92e1-f8f6719792b4-00-1nipa7cnf1fo7.riker.replit.dev/api"
+MICROSOFT_AUTH_REDIRECT_URI = "https://feaa8687-b31b-46ba-92e1-f8f6719792b4-00-1nipa7cnf1fo7.riker.replit.dev/api/auth/microsoft/callback"
+
+
+[userenv.production]
+API_URL = "https://dev.prospectly.com/api"
+FRONTEND_URL = "https://dev.prospectly.com"
+MICROSOFT_AUTH_REDIRECT_URI = "https://dev.prospectly.com/api/auth/microsoft/callback"
+

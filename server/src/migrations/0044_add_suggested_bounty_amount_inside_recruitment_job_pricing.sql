@@ -1,0 +1,2 @@
+ALTER TABLE "prospectly"."user_configurations" ALTER COLUMN "apple_import_tab" SET DEFAULT 'intro';--> statement-breakpoint
+ALTER TABLE "prospectly"."recruitment_job_pricing" ADD COLUMN "suggested_bounty_amount" numeric(10, 2) DEFAULT '0' NOT NULL;

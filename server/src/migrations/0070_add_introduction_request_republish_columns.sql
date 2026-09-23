@@ -1,0 +1,5 @@
+ALTER TABLE "prospectly"."introduction_transactions" DROP CONSTRAINT IF EXISTS "introduction_transactions_introduction_request_id_unique";--> statement-breakpoint
+ALTER TABLE "prospectly"."introduction_requests" ADD COLUMN IF NOT EXISTS "needs_republish" boolean DEFAULT false NOT NULL;--> statement-breakpoint
+ALTER TABLE "prospectly"."introduction_transactions" ADD COLUMN IF NOT EXISTS "is_active" boolean DEFAULT true NOT NULL;--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "idx_intro_transactions_is_active" ON "prospectly"."introduction_transactions" USING btree ("is_active");--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS "idx_intro_transactions_one_active_per_request" ON "prospectly"."introduction_transactions" USING btree ("introduction_request_id") WHERE "prospectly"."introduction_transactions"."is_active" = true;

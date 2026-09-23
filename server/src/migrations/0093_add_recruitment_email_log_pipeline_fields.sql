@@ -1,0 +1,7 @@
+ALTER TABLE "prospectly"."recruitment_email_logs" ADD COLUMN "candidate_id" uuid;--> statement-breakpoint
+ALTER TABLE "prospectly"."recruitment_email_logs" ADD COLUMN "pool_match_id" uuid;--> statement-breakpoint
+ALTER TABLE "prospectly"."recruitment_email_logs" ADD COLUMN "recipient_type" varchar(20) DEFAULT 'candidate' NOT NULL;--> statement-breakpoint
+ALTER TABLE "prospectly"."recruitment_email_logs" ADD CONSTRAINT "recruitment_email_logs_candidate_id_recruitment_job_candidates_id_fk" FOREIGN KEY ("candidate_id") REFERENCES "prospectly"."recruitment_job_candidates"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "prospectly"."recruitment_email_logs" ADD CONSTRAINT "recruitment_email_logs_pool_match_id_recruitment_job_pool_matches_id_fk" FOREIGN KEY ("pool_match_id") REFERENCES "prospectly"."recruitment_job_pool_matches"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+CREATE INDEX "idx_recruitment_email_logs_candidate_id" ON "prospectly"."recruitment_email_logs" USING btree ("candidate_id");--> statement-breakpoint
+CREATE INDEX "idx_recruitment_email_logs_pool_match_id" ON "prospectly"."recruitment_email_logs" USING btree ("pool_match_id");

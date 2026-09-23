@@ -1,0 +1,2 @@
+ALTER TABLE "prospectly"."recruitment_job_candidates" ADD COLUMN IF NOT EXISTS "gap_analysis" jsonb;--> statement-breakpoint
+ALTER TABLE "prospectly"."recruitment_job_pool_matches" ADD COLUMN IF NOT EXISTS "gap_analysis" jsonb;

@@ -1,0 +1,2 @@
+ALTER TABLE "prospectly"."recruitment_payout_history" ALTER COLUMN "cancellation_reason" SET DATA TYPE varchar(50);--> statement-breakpoint
+ALTER TABLE "prospectly"."recruitment_payout_history" ADD COLUMN "cancellation_notes" varchar(500);

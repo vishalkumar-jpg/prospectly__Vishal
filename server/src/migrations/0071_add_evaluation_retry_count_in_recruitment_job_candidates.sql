@@ -1,0 +1,1 @@
+ALTER TABLE "prospectly"."recruitment_job_candidates" ADD COLUMN "evaluation_retry_count" integer DEFAULT 0 NOT NULL;

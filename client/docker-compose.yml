@@ -1,0 +1,17 @@
+services:
+  prospectly-frontend:
+    container_name: prospectly-frontend
+    image: obdev/prospectly-frontend:latest
+    pull_policy: always
+    restart: always
+    ports:
+      - "127.0.0.1:3002:80"
+    environment:
+      SSR_API_URL: http://host.docker.internal:5000/api
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+networks:
+  default:
+    name: "prospectly-prod"
+    driver: bridge

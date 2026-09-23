@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+
+# Define colors
+GREEN='\033[0;32m'
+CYAN='\033[0;36m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+echo ""
+echo -e "${CYAN}🚀 Running lint-staged to check code quality...${NC}"
+echo ""
+
+# Run lint-staged and capture exit code
+if npx lint-staged; then
+  echo ""
+  echo -e "${GREEN}✅ Code is clean! Proceeding with the commit.${NC}"
+  echo ""
+else
+  echo ""
+  echo -e "${RED}❌ Linting failed! Fix errors before committing.${NC}"
+  exit 1
+fi
+

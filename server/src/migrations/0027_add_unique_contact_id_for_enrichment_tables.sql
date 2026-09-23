@@ -1,0 +1,1 @@
+ALTER TABLE "prospectly"."contact_enrichments" ADD CONSTRAINT "uniq_contact_enrichments_contact_id" UNIQUE("contact_id");

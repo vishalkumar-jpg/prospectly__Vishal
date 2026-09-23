@@ -1,0 +1,25 @@
+{
+  "name": "prospectly",
+  "version": "0.0.0",
+  "devDependencies": {
+    "concurrently": "^9.1.0",
+    "eslint": "^9.9.0",
+    "lint-staged": "^16.3.2",
+    "prettier": "^3.8.1",
+    "sonarqube-scanner": "^4.3.6"
+  },
+  "private": true,
+  "scripts": {
+    "install:all": "bun install && cd server && bun install && cd ../client && bun install",
+    "dev": "bunx concurrently -k \"cd server && bun run dev\" \"cd client && bun run dev\" \"cd server && bun run worker:dev\"",
+    "build": "cd client && bun run build && cd ../server && bun run build",
+    "worker:start": "cd server && bun run worker:start",
+    "worker:start:prod": "cd server && bun run worker:start:prod",
+    "prod": "bun run concurrently -k \"cd server && bun run start:prod\" \"cd client && bun run prod\"",
+    "local": "bunx concurrently -k \"cd server && bun run dev\" \"cd client && bun run dev\"",
+    "sonar": "set -a && . ./.env && set +a && sonar-scanner -Dsonar.token=\"$SONAR_TOKEN\""
+  },
+  "dependencies": {
+    "pgvector": "^0.2.1"
+  }
+}

@@ -1,0 +1,112 @@
+---
+description: Routing setup, authentication, and protected routes
+globs: client/src/App.tsx,client/src/components/ProtectedRoute.tsx,client/src/contexts/AuthContext.tsx
+---
+
+# Routing & Authentication
+
+## React Router Setup
+
+The application uses `react-router-dom` for navigation.
+
+### Route Organization (client/src/App.tsx)
+
+```typescript
+<BrowserRouter>
+  <AuthProvider>
+    <Routes>
+      {/* Public routes */}
+      <Route path="/" element={<Index />} />
+      <Route path="/signin" element={<SignIn />} />
+      
+      {/* Dashboard - Protected routes */}
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<Dashboard />} />
+        <Route path="contacts" element={<Contacts />} />
+        <Route path="prospect-hub" element={<ProspectHub />} />
+        {/* ... other child routes */}
+      </Route>
+      
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  </AuthProvider>
+</BrowserRouter>
+```
+
+## Authentication (AuthContext)
+
+Location: `client/src/contexts/AuthContext.tsx`
+
+The application uses JWT-based authentication. The `AuthProvider` manages:
+- Current user state (`user`).
+- Authentication status (`isAuthenticated`).
+- Initial session validation.
+- Login and logout methods.
+
+### Accessing Auth State
+
+```typescript
+import { useAuth } from "@/contexts/AuthContext";
+
+const { user, isAuthenticated, isLoading, login, logout } = useAuth();
+```
+
+## ProtectedRoute
+
+Location: `client/src/components/ProtectedRoute.tsx`
+
+Guards routes that require the user to be logged in.
+
+```typescript
+import { ProtectedRoute } from "./components/ProtectedRoute";
+
+// Usage in App.tsx
+<Route
+  path="/protected-path"
+  element={
+    <ProtectedRoute>
+      <MyProtectedComponent />
+    </ProtectedRoute>
+  }
+/>
+```
+
+### Behavior
+- If `isLoading` is true, it usually shows a loading state.
+- If `isAuthenticated` is false, it redirects to the sign-in page.
+- If authenticated, it renders the children.
+
+## OAuth Callbacks
+
+The project includes several callback routes for third-party integrations:
+- `/auth/callback`: General auth callback.
+- `/calendar/callback/google`: Google Calendar integration.
+- `/auth/google-contacts/callback`: Google Contacts import.
+- `/auth/microsoft/callback`: Microsoft Contacts import.
+
+## Navigation Patterns
+
+Use `useNavigate` for programmatic navigation:
+
+```typescript
+import { useNavigate } from "react-router-dom";
+
+const navigate = useNavigate();
+navigate("/dashboard/contacts");
+```
+
+Use `Link` for declarative navigation:
+
+```typescript
+import { Link } from "react-router-dom";
+
+<Link to="/dashboard">Go to Dashboard</Link>
+```
+

@@ -1,0 +1,3 @@
+Before implementing any multi-file changes or complex logic, always generate a detailed plan in a markdown format and wait for my explicit 'Proceed' command
+
+Enforce maximum file line count (default: 200) and Please split this file into smaller, more focused modules with single responsibilities. Consider extracting utility functions, separating components, or moving complex logic into dedicated files
