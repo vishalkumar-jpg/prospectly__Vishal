@@ -1,0 +1,59 @@
+name: Deploy Backend to Production
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'server/**'
+      - '.github/workflows/deploy-backend.prod.yaml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Backend to Server
+        uses: appleboy/ssh-action@master
+        env:
+          SERVER_ENV_BASE64: ${{ secrets.SERVER_ENV_BASE64 }}
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY}}
+          script_stop: true
+          envs: SERVER_ENV_BASE64
+          script: |
+            APP_DIR="/var/www/html/prospectly"
+            
+            # Ensure the directory exists and the user has permissions
+            sudo mkdir -p /var/www/html
+            sudo chown -R $USER:$USER /var/www/html
+            
+            if [ ! -d "$APP_DIR/.git" ]; then
+              git clone https://github.com/vishalkumar-jpg/prospectly__Vishal.git "$APP_DIR"
+            fi
+            
+            cd "$APP_DIR"
+            
+            # Fetch latest changes and reset
+            git fetch origin main
+            git reset --hard origin/main
+            
+            echo "Creating Docker network if it doesn't exist..."
+            sudo docker network inspect prospectly-prod-net >/dev/null 2>&1 || \
+              sudo docker network create prospectly-prod-net
+            
+            echo "Building and starting server..."
+            cd "$APP_DIR/server"
+            
+            # Decode the base64 secret to a .env file inside the server folder
+            echo "$SERVER_ENV_BASE64" | base64 --decode > .env
+            
+            # Run docker compose using the decoded .env
+            sudo -E docker compose -f docker-compose-dev.yml up -d --build
+            
+            echo "Cleaning old images..."
+            sudo docker image prune -af
+            
+            echo "Running containers:"
+            sudo docker ps

@@ -1,24 +1,27 @@
-name: Deploy to Production
+name: Deploy Frontend to Production
 
 on:
   push:
     branches:
       - main
+    paths:
+      - 'client/**'
+      - '.github/workflows/deploy-frontend.prod.yaml'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to Server
+      - name: Deploy Frontend to Server
         uses: appleboy/ssh-action@master
         env:
-          SERVER_ENV_BASE64: ${{ secrets.SERVER_ENV_BASE64 }}
+          FRONTEND_ENV_BASE64: ${{ secrets.FRONTEND_ENV_BASE64 }}
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY}}
           script_stop: true
-          envs: SERVER_ENV_BASE64
+          envs: FRONTEND_ENV_BASE64
           script: |
             APP_DIR="/var/www/html/prospectly"
             
@@ -36,21 +39,17 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
             
-            # Decode the base64 secret to a .env file
-            echo "$SERVER_ENV_BASE64" | base64 --decode > .env
-            
             echo "Creating Docker network if it doesn't exist..."
             sudo docker network inspect prospectly-prod-net >/dev/null 2>&1 || \
               sudo docker network create prospectly-prod-net
-
-            echo "Building and starting server..."
-            cd "$APP_DIR/server"
-            cp ../.env .env
-            sudo -E docker compose -f docker-compose-dev.yml up -d --build
             
             echo "Building and starting frontend..."
             cd "$APP_DIR/client"
-            cp ../.env .env
+            
+            # Decode the base64 secret to a .env file inside the client folder
+            echo "$FRONTEND_ENV_BASE64" | base64 --decode > .env
+            
+            # Run docker compose using the decoded .env
             sudo -E docker compose -f docker-compose.yml up -d --build
             
             echo "Cleaning old images..."
