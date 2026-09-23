@@ -14,9 +14,9 @@ jobs:
         env:
           SERVER_ENV_BASE64: ${{ secrets.SERVER_ENV_BASE64 }}
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY}}
           envs: SERVER_ENV_BASE64
           script: |
             APP_DIR="/var/www/html/prospectly"
