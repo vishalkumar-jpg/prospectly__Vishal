@@ -20,7 +20,7 @@ ARG SERVER_ENV_BASE64
 RUN if [ -n "${SERVER_ENV_BASE64:-}" ]; then \
       printf '%s' "$SERVER_ENV_BASE64" | base64 --decode > /app/.env; \
     fi
-ENV NODE_OPTIONS="--max-old-space-size=4096"
+ENV NODE_OPTIONS="--max-old-space-size=2048"
 RUN bun run build:prod
 
 # -------------------- Runtime stage --------------------
