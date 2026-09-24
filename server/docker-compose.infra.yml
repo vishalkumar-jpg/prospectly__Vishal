@@ -5,6 +5,15 @@ services:
     image: postgres:15-alpine
     container_name: prospectly-postgres
     restart: always
+
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ${AWS_REGION:-us-east-1}
+        awslogs-group: /prospectly/infra
+        awslogs-stream-prefix: postgres
+        awslogs-create-group: "true"
+
     env_file:
       - .env
     environment:
@@ -20,6 +29,15 @@ services:
     image: redis:7-alpine
     container_name: prospectly-redis
     restart: always
+
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ${AWS_REGION:-us-east-1}
+        awslogs-group: /prospectly/infra
+        awslogs-stream-prefix: redis
+        awslogs-create-group: "true"
+
     ports:
       - "6379:6379"
     volumes:
