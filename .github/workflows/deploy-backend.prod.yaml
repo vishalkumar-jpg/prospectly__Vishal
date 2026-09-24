@@ -65,6 +65,7 @@ jobs:
             echo "$SERVER_ENV_BASE64" | base64 --decode > .env
             
             # Run docker compose using the decoded .env
+            sudo -E docker compose -f docker-compose.infra.yml up -d
             sudo -E docker compose -f docker-compose-dev.yml up -d --build
             
             echo "Cleaning old images..."

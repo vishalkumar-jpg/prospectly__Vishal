@@ -39,19 +39,6 @@ jobs:
             sudo docker network inspect prospectly-prod-net >/dev/null 2>&1 || \
               sudo docker network create prospectly-prod-net
             
-            echo "Checking swap space..."
-            if [ $(sudo swapon --show | wc -l) -eq 0 ]; then
-              echo "No swap found. Creating a 4GB swap file to prevent out of memory errors..."
-              sudo dd if=/dev/zero of=/swapfile bs=1M count=4096
-              sudo chmod 600 /swapfile
-              sudo mkswap /swapfile
-              sudo swapon /swapfile
-              echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
-              echo "Swap created!"
-            else
-              echo "Swap already exists."
-            fi
-            
             echo "Building and starting frontend..."
             cd "$APP_DIR/client"
             
