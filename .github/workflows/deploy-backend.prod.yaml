@@ -67,7 +67,7 @@ jobs:
             
             # Run docker compose using the decoded .env
             sudo -E docker compose -p prospectly-infra -f docker-compose.infra.yml up -d
-            sudo -E docker compose -p prospectly-backend -f docker-compose-dev.yml up -d --build
+            sudo -E docker compose -f docker-compose-dev.yml up -d --build
             
             echo "Cleaning old images..."
             sudo docker image prune -af
