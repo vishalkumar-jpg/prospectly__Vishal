@@ -22,6 +22,7 @@ jobs:
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY}}
           script_stop: true
+          command_timeout: 30m
           envs: SERVER_ENV_BASE64
           script: |
             APP_DIR="/var/www/html/prospectly"
@@ -65,8 +66,8 @@ jobs:
             echo "$SERVER_ENV_BASE64" | base64 --decode > .env
             
             # Run docker compose using the decoded .env
-            sudo -E docker compose -f docker-compose.infra.yml up -d
-            sudo -E docker compose -f docker-compose-dev.yml up -d --build
+            sudo -E docker compose -p prospectly-infra -f docker-compose.infra.yml up -d
+            sudo -E docker compose -p prospectly-backend -f docker-compose-dev.yml up -d --build
             
             echo "Cleaning old images..."
             sudo docker image prune -af
