@@ -16,14 +16,6 @@ services:
     tty: true
     restart: always
 
-    logging:
-      driver: awslogs
-      options:
-        awslogs-region: ${AWS_REGION:-us-east-1}
-        awslogs-group: /prospectly/backend
-        awslogs-stream-prefix: api
-        awslogs-create-group: "true"
-
     env_file:
       - .env
 
@@ -56,14 +48,6 @@ services:
     image: prospectly-server:local
     tty: true
     restart: always
-
-    logging:
-      driver: awslogs
-      options:
-        awslogs-region: ${AWS_REGION:-us-east-1}
-        awslogs-group: /prospectly/backend
-        awslogs-stream-prefix: worker
-        awslogs-create-group: "true"
 
     depends_on:
       prospectly:
