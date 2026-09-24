@@ -1,12 +1,6 @@
 name: Deploy Backend to Production
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'server/**'
-      - '.github/workflows/deploy-backend.prod.yaml'
   workflow_dispatch:
 
 jobs:
