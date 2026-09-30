@@ -45,8 +45,9 @@ jobs:
           # 1. Decode your GitHub Secret into a .env file
           echo "$FRONTEND_ENV_BASE64" | base64 --decode > client/.env
           
-          # 2. Automatically generate the K8s secret file
-          kubectl create secret generic prospectly-frontend-secret --from-env-file=client/.env --dry-run=client -o yaml > client/k8s/secret.yaml
+          # 2. Automatically inject the K8s secret directly into EKS (Bypassing Git)
+          aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name cluster-vishal-eks
+          kubectl create secret generic prospectly-frontend-secret --from-env-file=client/.env --dry-run=client -o yaml | kubectl apply -f -
           
           # Update the deployment.yaml with the exact ECR image and commit SHA
           sed -i "s|image: .*|image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG|g" client/k8s/deployment.yaml
@@ -54,7 +55,7 @@ jobs:
           # Commit the change
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add client/k8s/deployment.yaml client/k8s/secret.yaml
+          git add client/k8s/deployment.yaml
           git commit -m "Deploy frontend: update image to $IMAGE_TAG" || echo "No changes to commit"
           git fetch origin main
           git rebase origin/main

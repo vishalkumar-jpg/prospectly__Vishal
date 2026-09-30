@@ -59,14 +59,15 @@ jobs:
           echo "REDIS_HOST=redis" >> server/.env
           echo "REDIS_PORT=6379" >> server/.env
           
-          # 3. Automatically generate the K8s secret file
-          kubectl create secret generic prospectly-backend-secret --from-env-file=server/.env --dry-run=client -o yaml > server/k8s/secret.yaml
+          # 3. Automatically inject the K8s secret directly into EKS (Bypassing Git)
+          aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name cluster-vishal-eks
+          kubectl create secret generic prospectly-backend-secret --from-env-file=server/.env --dry-run=client -o yaml | kubectl apply -f -
           
-          # 4. GitOps Push
+          # 4. GitOps Push (Only safe manifests)
           sed -i "s|image: .*|image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG|g" server/k8s/deployment.yaml
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add server/k8s/deployment.yaml server/k8s/secret.yaml
+          git add server/k8s/deployment.yaml
           git commit -m "Deploy backend: update image to $IMAGE_TAG" || echo "No changes to commit"
           git fetch origin main
           git rebase origin/main
