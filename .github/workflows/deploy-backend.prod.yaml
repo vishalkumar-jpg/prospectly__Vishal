@@ -46,6 +46,12 @@ jobs:
           # 1. Decode your GitHub Secret into a .env file
           echo "$SERVER_ENV_BASE64" | base64 --decode > server/.env
           
+          # 1.5 Remove existing Database/Redis keys to prevent duplicates
+          sed -i '/^DATABASE_URL=/d' server/.env
+          sed -i '/^REDIS_URL=/d' server/.env
+          sed -i '/^REDIS_HOST=/d' server/.env
+          sed -i '/^REDIS_PORT=/d' server/.env
+          
           # 2. Append the internal Kubernetes database URLs we created
           echo "" >> server/.env
           echo "DATABASE_URL=postgresql://postgres:password@postgres:5432/prospectly" >> server/.env
