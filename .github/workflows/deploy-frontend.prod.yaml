@@ -40,14 +40,21 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_FRONTEND }}
           IMAGE_TAG: ${{ github.sha }}
+          FRONTEND_ENV_BASE64: ${{ secrets.FRONTEND_ENV_BASE64 }}
         run: |
+          # 1. Decode your GitHub Secret into a .env file
+          echo "$FRONTEND_ENV_BASE64" | base64 --decode > client/.env
+          
+          # 2. Automatically generate the K8s secret file
+          kubectl create secret generic prospectly-frontend-secret --from-env-file=client/.env --dry-run=client -o yaml > client/k8s/secret.yaml
+          
           # Update the deployment.yaml with the exact ECR image and commit SHA
           sed -i "s|image: .*|image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG|g" client/k8s/deployment.yaml
           
           # Commit the change
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add client/k8s/deployment.yaml
+          git add client/k8s/deployment.yaml client/k8s/secret.yaml
           git commit -m "Deploy frontend: update image to $IMAGE_TAG" || echo "No changes to commit"
           git fetch origin main
           git rebase origin/main

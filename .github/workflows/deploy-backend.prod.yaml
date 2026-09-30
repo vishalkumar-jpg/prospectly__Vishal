@@ -41,11 +41,26 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_BACKEND }}
           IMAGE_TAG: ${{ github.sha }}
+          SERVER_ENV_BASE64: ${{ secrets.SERVER_ENV_BASE64 }}
         run: |
+          # 1. Decode your GitHub Secret into a .env file
+          echo "$SERVER_ENV_BASE64" | base64 --decode > server/.env
+          
+          # 2. Append the internal Kubernetes database URLs we created
+          echo "" >> server/.env
+          echo "DATABASE_URL=postgresql://postgres:password@postgres:5432/prospectly" >> server/.env
+          echo "REDIS_URL=redis://redis:6379" >> server/.env
+          echo "REDIS_HOST=redis" >> server/.env
+          echo "REDIS_PORT=6379" >> server/.env
+          
+          # 3. Automatically generate the K8s secret file
+          kubectl create secret generic prospectly-backend-secret --from-env-file=server/.env --dry-run=client -o yaml > server/k8s/secret.yaml
+          
+          # 4. GitOps Push
           sed -i "s|image: .*|image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG|g" server/k8s/deployment.yaml
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add server/k8s/deployment.yaml
+          git add server/k8s/deployment.yaml server/k8s/secret.yaml
           git commit -m "Deploy backend: update image to $IMAGE_TAG" || echo "No changes to commit"
           git fetch origin main
           git rebase origin/main
