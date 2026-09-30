@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: prospectly-frontend-config
-  namespace: default
-data:
-  NODE_ENV: "production"
-  HOST: "0.0.0.0"
-  PORT: "80"
