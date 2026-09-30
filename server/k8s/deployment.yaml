@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: prospectly-backend
-          image: prospectly-backend:latest # TODO: Replace with your actual backend ECR image URI
+          image: 466682667800.dkr.ecr.us-west-1.amazonaws.com/test-vishal-prospectly-backend:caf37ff3825b38eb62052240b4a2c8b9c5125133
           imagePullPolicy: Always
           ports:
             - containerPort: 5000
