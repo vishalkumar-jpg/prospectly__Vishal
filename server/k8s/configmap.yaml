@@ -10,3 +10,4 @@ data:
   API_URL: "https://learning-back.officebrain.com"
   CORS_ORIGINS: "https://learning-front.officebrain.com"
   COOKIE_DOMAIN: ".officebrain.com"
+  AWS_SIGNED_URL_EXPIRATION: "3600"
