@@ -3,6 +3,12 @@ name: Deploy Backend to Production
 on:
   workflow_dispatch:
 
+# ─── Shared env vars for readable, traceable image names ───
+env:
+  APP_NAME: prospectly-backend
+  IMAGE_VERSION: v1.${{ github.run_number }}.0
+  SHORT_SHA: ${{ github.sha }}
+
 permissions:
   contents: read
 
@@ -12,6 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       image: ${{ steps.build.outputs.image }}
+      image_tag: ${{ steps.build.outputs.image_tag }}
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
@@ -32,22 +39,31 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_BACKEND }}
-          IMAGE_TAG: ${{ github.sha }}
           SERVER_ENV_BASE64: ${{ secrets.SERVER_ENV_BASE64 }}
         run: |
-          FULL_IMAGE="$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          # ── Readable image tag: v1.42.0-abc1234 ──
+          IMAGE_TAG="${IMAGE_VERSION}-${SHORT_SHA::7}"
+          FULL_IMAGE="${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}"
+
+          echo "🏷️  Image tag : $IMAGE_TAG"
+          echo "📦 Full image: $FULL_IMAGE"
 
           cd server
           docker build \
             --build-arg SERVER_ENV_BASE64="$SERVER_ENV_BASE64" \
-            -t "$FULL_IMAGE" \
-            -t "$ECR_REGISTRY/$ECR_REPOSITORY:latest" \
+            --label "org.opencontainers.image.source=https://github.com/${{ github.repository }}" \
+            --label "org.opencontainers.image.revision=${{ github.sha }}" \
+            --label "org.opencontainers.image.version=${IMAGE_TAG}" \
+            --label "org.opencontainers.image.title=${APP_NAME}" \
+            -t "${FULL_IMAGE}" \
+            -t "${ECR_REGISTRY}/${ECR_REPOSITORY}:latest" \
             .
 
-          docker push "$FULL_IMAGE"
-          docker push "$ECR_REGISTRY/$ECR_REPOSITORY:latest"
+          docker push "${FULL_IMAGE}"
+          docker push "${ECR_REGISTRY}/${ECR_REPOSITORY}:latest"
 
-          echo "image=$FULL_IMAGE" >> "$GITHUB_OUTPUT"
+          echo "image=${FULL_IMAGE}" >> "$GITHUB_OUTPUT"
+          echo "image_tag=${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
 
   update-gitops:
     name: Update GitOps Manifest
@@ -66,18 +82,23 @@ jobs:
       - name: Update backend deployment image
         env:
           NEW_IMAGE: ${{ needs.build-and-push.outputs.image }}
+          IMAGE_TAG: ${{ needs.build-and-push.outputs.image_tag }}
         run: |
           MANIFEST="gitops-vishal/project-prospectly/production/Backend/k8s/deployment.yaml"
 
-          echo "Updating image to: $NEW_IMAGE"
+          echo "🔄 Updating backend image to: $NEW_IMAGE"
+          echo "🏷️  Tag: $IMAGE_TAG"
           sed -i "s|image: .*|image: $NEW_IMAGE|g" "$MANIFEST"
 
+          echo "───── Updated manifest ─────"
           cat "$MANIFEST"
 
       - name: Commit and push to GitOps repo
+        env:
+          IMAGE_TAG: ${{ needs.build-and-push.outputs.image_tag }}
         run: |
           cd gitops-vishal
           git add project-prospectly/production/Backend/k8s/deployment.yaml
           git diff --cached --quiet && echo "No changes to commit" && exit 0
-          git commit -m "chore(backend): update image to ${{ github.sha }}"
+          git commit -m "deploy(backend): ${APP_NAME} → ${IMAGE_TAG}"
           git push origin main
