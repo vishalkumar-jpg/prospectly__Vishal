@@ -49,4 +49,5 @@ jobs:
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add client/k8s/deployment.yaml
           git commit -m "Deploy frontend: update image to $IMAGE_TAG" || echo "No changes to commit"
+          git pull --rebase origin main
           git push
