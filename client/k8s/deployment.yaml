@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: prospectly-frontend
-          image: 466682667800.dkr.ecr.us-west-1.amazonaws.com/test-vishal-prospectly-frontend:82d242c0e5c43972a71bb3b80a4ca7cb7473823d
+          image: 466682667800.dkr.ecr.us-west-1.amazonaws.com/test-vishal-prospectly-frontend:dd20ea478169ae3582189125ea212817bcb8fd81
           imagePullPolicy: Always
           ports:
             - containerPort: 80
