@@ -4,13 +4,16 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  deploy:
+  build-and-push:
+    name: Build & Push Frontend Image
     runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.build.outputs.image }}
     steps:
-      - name: Checkout Repository
+      - name: Checkout source code
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
@@ -24,39 +27,62 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build, tag, and push frontend image to Amazon ECR
+      - name: Decode frontend .env from secret
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_FRONTEND }}
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          cd client
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-
-      - name: Update Kubernetes manifest and push to Git (GitOps)
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_FRONTEND }}
-          IMAGE_TAG: ${{ github.sha }}
           FRONTEND_ENV_BASE64: ${{ secrets.FRONTEND_ENV_BASE64 }}
         run: |
-          # 1. Decode your GitHub Secret into a .env file
           echo "$FRONTEND_ENV_BASE64" | base64 --decode > client/.env
-          
-          # 2. Automatically inject the K8s secret directly into EKS (Bypassing Git)
-          aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name cluster-vishal-eks
-          kubectl create secret generic prospectly-frontend-secret --from-env-file=client/.env --dry-run=client -o yaml | kubectl apply -f -
-          
-          # Update the deployment.yaml with the exact ECR image and commit SHA
-          sed -i "s|image: .*|image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG|g" client/k8s/deployment.yaml
-          
-          # Commit the change
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add client/k8s/deployment.yaml
-          git commit -m "Deploy frontend: update image to $IMAGE_TAG" || echo "No changes to commit"
-          git fetch origin main
-          git rebase origin/main
-          git push origin HEAD:main
+          echo "✅ Decoded FRONTEND_ENV_BASE64 into client/.env"
+
+      - name: Build, tag, and push frontend image to ECR
+        id: build
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_FRONTEND }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          FULL_IMAGE="$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+          cd client
+          docker build \
+            -t "$FULL_IMAGE" \
+            -t "$ECR_REGISTRY/$ECR_REPOSITORY:latest" \
+            .
+
+          docker push "$FULL_IMAGE"
+          docker push "$ECR_REGISTRY/$ECR_REPOSITORY:latest"
+
+          echo "image=$FULL_IMAGE" >> "$GITHUB_OUTPUT"
+
+  update-gitops:
+    name: Update GitOps Manifest
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    steps:
+      - name: Clone GitOps repository
+        env:
+          GIITT_TOKEN: ${{ secrets.GIITT_TOKEN }}
+        run: |
+          git clone https://x-access-token:${GIITT_TOKEN}@github.com/vishalkumar-jpg/gitops-vishal.git
+          cd gitops-vishal
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Update frontend deployment image
+        env:
+          NEW_IMAGE: ${{ needs.build-and-push.outputs.image }}
+        run: |
+          MANIFEST="gitops-vishal/project-prospectly/production/Frontend/k8s/deployment.yaml"
+
+          echo "Updating image to: $NEW_IMAGE"
+          sed -i "s|image: .*|image: $NEW_IMAGE|g" "$MANIFEST"
+
+          cat "$MANIFEST"
+
+      - name: Commit and push to GitOps repo
+        run: |
+          cd gitops-vishal
+          git add project-prospectly/production/Frontend/k8s/deployment.yaml
+          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          git commit -m "chore(frontend): update image to ${{ github.sha }}"
+          git push origin main

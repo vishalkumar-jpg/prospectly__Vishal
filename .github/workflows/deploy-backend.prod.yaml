@@ -4,13 +4,16 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  deploy:
+  build-and-push:
+    name: Build & Push Backend Image
     runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.build.outputs.image }}
     steps:
-      - name: Checkout Repository
+      - name: Checkout source code
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
@@ -24,52 +27,57 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build, tag, and push backend image to Amazon ECR
+      - name: Build, tag, and push backend image to ECR
+        id: build
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_BACKEND }}
           IMAGE_TAG: ${{ github.sha }}
           SERVER_ENV_BASE64: ${{ secrets.SERVER_ENV_BASE64 }}
         run: |
+          FULL_IMAGE="$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
           cd server
-          docker build --build-arg SERVER_ENV_BASE64="$SERVER_ENV_BASE64" -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker build \
+            --build-arg SERVER_ENV_BASE64="$SERVER_ENV_BASE64" \
+            -t "$FULL_IMAGE" \
+            -t "$ECR_REGISTRY/$ECR_REPOSITORY:latest" \
+            .
 
-      - name: Update Kubernetes manifest and push to Git (GitOps)
+          docker push "$FULL_IMAGE"
+          docker push "$ECR_REGISTRY/$ECR_REPOSITORY:latest"
+
+          echo "image=$FULL_IMAGE" >> "$GITHUB_OUTPUT"
+
+  update-gitops:
+    name: Update GitOps Manifest
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    steps:
+      - name: Clone GitOps repository
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_BACKEND }}
-          IMAGE_TAG: ${{ github.sha }}
-          SERVER_ENV_BASE64: ${{ secrets.SERVER_ENV_BASE64 }}
+          GIITT_TOKEN: ${{ secrets.GIITT_TOKEN }}
         run: |
-          # 1. Decode your GitHub Secret into a .env file
-          echo "$SERVER_ENV_BASE64" | base64 --decode > server/.env
-          
-          # 1.5 Remove existing Database/Redis keys to prevent duplicates
-          sed -i '/^DATABASE_URL=/d' server/.env
-          sed -i '/^REDIS_URL=/d' server/.env
-          sed -i '/^REDIS_HOST=/d' server/.env
-          sed -i '/^REDIS_PORT=/d' server/.env
-          
-          # 2. Append the internal Kubernetes database URLs we created
-          echo "" >> server/.env
-          echo "DATABASE_URL=postgresql://postgres:password@postgres:5432/prospectly" >> server/.env
-          echo "REDIS_URL=redis://redis:6379" >> server/.env
-          echo "REDIS_HOST=redis" >> server/.env
-          echo "REDIS_PORT=6379" >> server/.env
-          
-          # 3. Automatically inject the K8s secret directly into EKS (Bypassing Git)
-          aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name cluster-vishal-eks
-          kubectl create secret generic prospectly-backend-secret --from-env-file=server/.env --dry-run=client -o yaml | kubectl apply -f -
-          
-          # 4. GitOps Push (Only safe manifests)
-          sed -i "s|image: .*|image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG|g" server/k8s/deployment.yaml
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add server/k8s/deployment.yaml
-          git commit -m "Deploy backend: update image to $IMAGE_TAG" || echo "No changes to commit"
-          git fetch origin main
-          git rebase origin/main
-          git push origin HEAD:main
+          git clone https://x-access-token:${GIITT_TOKEN}@github.com/vishalkumar-jpg/gitops-vishal.git
+          cd gitops-vishal
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
+      - name: Update backend deployment image
+        env:
+          NEW_IMAGE: ${{ needs.build-and-push.outputs.image }}
+        run: |
+          MANIFEST="gitops-vishal/project-prospectly/production/Backend/k8s/deployment.yaml"
+
+          echo "Updating image to: $NEW_IMAGE"
+          sed -i "s|image: .*|image: $NEW_IMAGE|g" "$MANIFEST"
+
+          cat "$MANIFEST"
+
+      - name: Commit and push to GitOps repo
+        run: |
+          cd gitops-vishal
+          git add project-prospectly/production/Backend/k8s/deployment.yaml
+          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          git commit -m "chore(backend): update image to ${{ github.sha }}"
+          git push origin main
