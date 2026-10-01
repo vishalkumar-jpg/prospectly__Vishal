@@ -45,6 +45,7 @@ jobs:
           FRONTEND_ENV_BASE64: ${{ secrets.FRONTEND_ENV_BASE64 }}
         run: |
           echo "$FRONTEND_ENV_BASE64" | base64 --decode > client/.env
+          echo "VITE_API_URL=https://learning-back.officebrain.com/api" >> client/.env
           echo "✅ Decoded FRONTEND_ENV_BASE64 into client/.env"
 
       - name: Build, tag, and push frontend image to ECR
