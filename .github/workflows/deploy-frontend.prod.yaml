@@ -3,123 +3,72 @@ name: Deploy Frontend to Production
 on:
   workflow_dispatch:
 
-# ─── Shared env vars for readable, traceable image names ───
 env:
   APP_NAME: prospectly-frontend
-  IMAGE_VERSION: v1.${{ github.run_number }}.0
-  SHORT_SHA: ${{ github.sha }}
 
 permissions:
   contents: read
 
 jobs:
-  build-and-push:
-    name: Build & Push Frontend Image
+  deploy:
+    name: Build & Deploy Frontend via SSH
     runs-on: ubuntu-latest
-    outputs:
-      image_tag: ${{ steps.tag.outputs.image_tag }}
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
 
-      - name: Generate readable image tag
-        id: tag
-        run: |
-          IMAGE_TAG="${IMAGE_VERSION}-${SHORT_SHA::7}"
-          echo "image_tag=${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
-          echo "🏷️  Image tag: $IMAGE_TAG"
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      # ─── Deploy to server via SSH ───
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT || 22 }}
+          script_stop: true
+          script: |
+            set -e
+            echo "🚀 Starting frontend deployment..."
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+            APP_DIR="${{ secrets.APP_DIR || '/opt/prospectly' }}"
+            cd "$APP_DIR"
 
-      - name: Decode frontend .env from secret
-        env:
-          FRONTEND_ENV_BASE64: ${{ secrets.FRONTEND_ENV_BASE64 }}
-        run: |
-          echo "$FRONTEND_ENV_BASE64" | base64 --decode > client/.env
-          echo "VITE_API_URL=https://learning-back.officebrain.com/api" >> client/.env
-          echo "✅ Decoded FRONTEND_ENV_BASE64 into client/.env"
+            # ─── Pull latest code ───
+            echo "📥 Pulling latest code..."
+            git fetch origin main
+            git reset --hard origin/main
 
-      - name: Build, tag, and push frontend image to ECR
-        id: build
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_FRONTEND }}
-          IMAGE_TAG: ${{ steps.tag.outputs.image_tag }}
-        run: |
-          FULL_IMAGE="${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}"
+            # ─── Create Docker network if not exists ───
+            docker network inspect prospectly-prod-net >/dev/null 2>&1 || \
+              docker network create prospectly-prod-net
 
-          echo "📦 Full image: $FULL_IMAGE"
+            # ─── Build and deploy frontend ───
+            echo "📦 Building frontend image..."
+            cd client
+            docker compose build --no-cache
 
-          cd client
-          docker build \
-            --label "org.opencontainers.image.source=https://github.com/${{ github.repository }}" \
-            --label "org.opencontainers.image.revision=${{ github.sha }}" \
-            --label "org.opencontainers.image.version=${IMAGE_TAG}" \
-            --label "org.opencontainers.image.title=${APP_NAME}" \
-            -t "${FULL_IMAGE}" \
-            -t "${ECR_REGISTRY}/${ECR_REPOSITORY}:latest" \
-            .
+            echo "🔄 Restarting frontend..."
+            docker compose up -d
 
-          docker push "${FULL_IMAGE}"
-          docker push "${ECR_REGISTRY}/${ECR_REPOSITORY}:latest"
+            # ─── Wait for health check ───
+            echo "⏳ Waiting for frontend to be ready..."
+            sleep 5
+            for i in $(seq 1 20); do
+              if curl -sf http://localhost:3002 > /dev/null 2>&1; then
+                echo "✅ Frontend is live!"
+                break
+              fi
+              if [ "$i" -eq 20 ]; then
+                echo "❌ Frontend health check failed after 20 attempts"
+                docker logs prospectly-frontend --tail 50
+                exit 1
+              fi
+              echo "⏱️ Attempt $i/20 — waiting..."
+              sleep 5
+            done
 
-  update-gitops:
-    name: Update GitOps Manifest
-    runs-on: ubuntu-latest
-    needs: build-and-push
-    steps:
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+            # ─── Cleanup old images ───
+            echo "🧹 Cleaning up old images..."
+            docker image prune -f
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Clone GitOps repository
-        env:
-          GIITT_TOKEN: ${{ secrets.GIITT_TOKEN }}
-        run: |
-          git clone https://x-access-token:${GIITT_TOKEN}@github.com/vishalkumar-jpg/gitops-vishal.git
-          cd gitops-vishal
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Update frontend deployment image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_FRONTEND }}
-          IMAGE_TAG: ${{ needs.build-and-push.outputs.image_tag }}
-        run: |
-          # Reconstruct image URI directly (avoids GitHub Actions output masking)
-          NEW_IMAGE="${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}"
-          MANIFEST="gitops-vishal/project-prospectly/production/Frontend/k8s/deployment.yaml"
-
-          echo "🔄 Updating frontend image to: $NEW_IMAGE"
-          echo "🏷️  Tag: $IMAGE_TAG"
-          sed -i "s|image: .*|image: ${NEW_IMAGE}|g" "$MANIFEST"
-
-          echo "───── Updated manifest ─────"
-          cat "$MANIFEST"
-
-      - name: Commit and push to GitOps repo
-        env:
-          IMAGE_TAG: ${{ needs.build-and-push.outputs.image_tag }}
-        run: |
-          cd gitops-vishal
-          git add project-prospectly/production/Frontend/k8s/deployment.yaml
-          git diff --cached --quiet && echo "No changes to commit" && exit 0
-          git commit -m "deploy(frontend): ${APP_NAME} → ${IMAGE_TAG}"
-          git push origin main
+            echo "🎉 Frontend deployment complete!"

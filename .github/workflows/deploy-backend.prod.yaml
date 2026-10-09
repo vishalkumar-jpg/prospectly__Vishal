@@ -3,117 +3,77 @@ name: Deploy Backend to Production
 on:
   workflow_dispatch:
 
-# ─── Shared env vars for readable, traceable image names ───
 env:
   APP_NAME: prospectly-backend
-  IMAGE_VERSION: v1.${{ github.run_number }}.0
-  SHORT_SHA: ${{ github.sha }}
+  IMAGE_TAG: backend-${{ github.sha }}
 
 permissions:
   contents: read
 
 jobs:
-  build-and-push:
-    name: Build & Push Backend Image
+  deploy:
+    name: Build & Deploy Backend via SSH
     runs-on: ubuntu-latest
-    outputs:
-      image_tag: ${{ steps.tag.outputs.image_tag }}
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
 
-      - name: Generate readable image tag
-        id: tag
-        run: |
-          IMAGE_TAG="${IMAGE_VERSION}-${SHORT_SHA::7}"
-          echo "image_tag=${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
-          echo "🏷️  Image tag: $IMAGE_TAG"
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      # ─── Deploy to server via SSH ───
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT || 22 }}
+          script_stop: true
+          script: |
+            set -e
+            echo "🚀 Starting backend deployment..."
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+            APP_DIR="${{ secrets.APP_DIR || '/opt/prospectly' }}"
+            cd "$APP_DIR"
 
-      - name: Build, tag, and push backend image to ECR
-        id: build
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_BACKEND }}
-          IMAGE_TAG: ${{ steps.tag.outputs.image_tag }}
-          SERVER_ENV_BASE64: ${{ secrets.SERVER_ENV_BASE64 }}
-        run: |
-          FULL_IMAGE="${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}"
+            # ─── Pull latest code ───
+            echo "📥 Pulling latest code..."
+            git fetch origin main
+            git reset --hard origin/main
 
-          echo "📦 Full image: $FULL_IMAGE"
+            # ─── Create Docker network if not exists ───
+            docker network inspect prospectly-prod-net >/dev/null 2>&1 || \
+              docker network create prospectly-prod-net
 
-          cd server
-          docker build \
-            --build-arg SERVER_ENV_BASE64="$SERVER_ENV_BASE64" \
-            --label "org.opencontainers.image.source=https://github.com/${{ github.repository }}" \
-            --label "org.opencontainers.image.revision=${{ github.sha }}" \
-            --label "org.opencontainers.image.version=${IMAGE_TAG}" \
-            --label "org.opencontainers.image.title=${APP_NAME}" \
-            -t "${FULL_IMAGE}" \
-            -t "${ECR_REGISTRY}/${ECR_REPOSITORY}:latest" \
-            .
+            # ─── Start infrastructure if not running ───
+            echo "🐘 Ensuring infrastructure is running..."
+            cd server
+            docker compose -f docker-compose.infra.yml up -d
 
-          docker push "${FULL_IMAGE}"
-          docker push "${ECR_REGISTRY}/${ECR_REPOSITORY}:latest"
+            # ─── Build and deploy backend ───
+            echo "📦 Building backend image..."
+            docker compose -f docker-compose-dev.yml build --no-cache
 
-  update-gitops:
-    name: Update GitOps Manifest
-    runs-on: ubuntu-latest
-    needs: build-and-push
-    steps:
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+            echo "🔄 Restarting backend services..."
+            docker compose -f docker-compose-dev.yml up -d
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+            # ─── Wait for health check ───
+            echo "⏳ Waiting for backend to be healthy..."
+            sleep 10
+            for i in $(seq 1 30); do
+              if curl -sf http://localhost:5001/api/health > /dev/null 2>&1; then
+                echo "✅ Backend is healthy!"
+                break
+              fi
+              if [ "$i" -eq 30 ]; then
+                echo "❌ Backend health check failed after 30 attempts"
+                docker logs prospectly-dev --tail 50
+                exit 1
+              fi
+              echo "⏱️ Attempt $i/30 — waiting..."
+              sleep 5
+            done
 
-      - name: Clone GitOps repository
-        env:
-          GIITT_TOKEN: ${{ secrets.GIITT_TOKEN }}
-        run: |
-          git clone https://x-access-token:${GIITT_TOKEN}@github.com/vishalkumar-jpg/gitops-vishal.git
-          cd gitops-vishal
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+            # ─── Cleanup old images ───
+            echo "🧹 Cleaning up old images..."
+            docker image prune -f
 
-      - name: Update backend deployment image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_BACKEND }}
-          IMAGE_TAG: ${{ needs.build-and-push.outputs.image_tag }}
-        run: |
-          # Reconstruct image URI directly (avoids GitHub Actions output masking)
-          NEW_IMAGE="${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}"
-          MANIFEST="gitops-vishal/project-prospectly/production/Backend/k8s/deployment.yaml"
-
-          echo "🔄 Updating backend image to: $NEW_IMAGE"
-          echo "🏷️  Tag: $IMAGE_TAG"
-          sed -i "s|image: .*|image: ${NEW_IMAGE}|g" "$MANIFEST"
-
-          echo "───── Updated manifest ─────"
-          cat "$MANIFEST"
-
-      - name: Commit and push to GitOps repo
-        env:
-          IMAGE_TAG: ${{ needs.build-and-push.outputs.image_tag }}
-        run: |
-          cd gitops-vishal
-          git add project-prospectly/production/Backend/k8s/deployment.yaml
-          git diff --cached --quiet && echo "No changes to commit" && exit 0
-          git commit -m "deploy(backend): ${APP_NAME} → ${IMAGE_TAG}"
-          git push origin main
+            echo "🎉 Backend deployment complete!"
