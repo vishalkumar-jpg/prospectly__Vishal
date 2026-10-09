@@ -30,9 +30,16 @@ jobs:
             echo "🚀 Starting frontend deployment..."
 
             APP_DIR="/opt/prospectly"
-            cd "$APP_DIR"
 
-            # ─── Pull latest code ───
+            # ─── Clone or pull latest code ───
+            if [ ! -d "$APP_DIR/.git" ]; then
+              echo "📥 First run — cloning repository..."
+              sudo mkdir -p "$APP_DIR"
+              sudo chown $(whoami):$(whoami) "$APP_DIR"
+              git clone https://github.com/vishalkumar-jpg/prospectly__Vishal.git "$APP_DIR"
+            fi
+
+            cd "$APP_DIR"
             echo "📥 Pulling latest code..."
             git fetch origin main
             git reset --hard origin/main
